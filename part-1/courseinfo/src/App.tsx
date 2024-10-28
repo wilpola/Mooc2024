@@ -7,7 +7,7 @@ function App() {
 
   return (
     <>
-      <Header course={"course"} />
+      <Header course={"Half Stack application development"} />
       <Content />
       <Total />
     </>
