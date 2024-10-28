@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Controls } from "./components";
+import { Controls, Statistics } from "./components";
 
 /**
  * The Unicafe 1.6-1.14
@@ -43,6 +43,7 @@ function App() {
       ...statistics,
       positive: calculatedPositive,
       average: calculatedAverage,
+      total: total
     });
   }, [reviews]);
 
@@ -55,15 +56,7 @@ function App() {
       <h2 className="text-xl font-semibold">Statistics</h2>
       {reviews.good > 0 || reviews.neutral > 0 || reviews.bad > 0 ? (
         <>
-          <p>Good: {reviews.good}</p>
-          <p>Neutral: {reviews.neutral}</p>
-          <p>Bad: {reviews.bad}</p>
-          <p>All: {reviews.good + reviews.neutral + reviews.bad}</p>
-          <p>Average: {(Math.ceil(statistics.average * 100)/ 100).toFixed(2)}</p>
-          <p>
-            Positive: {(Math.round(statistics.positive * 100) / 100).toFixed(2)}
-            %
-          </p>
+          <Statistics reviews={reviews} statistics={statistics} />
         </>
       ) : (
         <p>No feedback given</p>
