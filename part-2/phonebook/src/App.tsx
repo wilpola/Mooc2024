@@ -1,13 +1,26 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 interface IPeople {
+  id: number;
   name: string;
   phone?: string;
 }
 
 function App() {
-  const [people, setPeople] = useState<IPeople[]>([{ name: "Arto Hellas" }]);
-  const [newPerson, setNewPerson] = useState<IPeople>({ name: "", phone: "" });
+  const [people, setPeople] = useState<IPeople[]>([
+    { name: "Arto Hellas", phone: "040-123456", id: 1 },
+    { name: "Ada Lovelace", phone: "39-44-5323523", id: 2 },
+    { name: "Dan Abramov", phone: "12-43-234345", id: 3 },
+    { name: "Mary Poppendieck", phone: "39-23-6423122", id: 4 },
+  ]);
+  const [counter, setCounter] = useState<number>(4);
+  const [newPerson, setNewPerson] = useState<IPeople>({
+    name: "",
+    phone: "",
+    id: counter,
+  });
+  const [filtered, setFiltered] = useState<string>("");
+  const [phonebook, setPhoneBook] = useState<any>(people);
 
   const handleAddition = (e: any) => {
     e.preventDefault(); // Prevent refresh
@@ -26,12 +39,26 @@ function App() {
       } else {
         setPeople([
           ...people,
-          { name: newPerson.name, phone: newPerson.phone },
+          { name: newPerson.name, phone: newPerson.phone, id: counter + 1 },
         ]);
-        setNewPerson({ name: "", phone: "" });
+        setNewPerson({ name: "", phone: "", id: counter });
+        setCounter(counter + 1);
       }
     }
   };
+
+  // Update based on filtered content
+  useEffect(() => {
+    if (filtered === "") {
+      setPhoneBook(people);
+    } else {
+      setPhoneBook(
+        people.filter((person) =>
+          person.name.toLowerCase().includes(filtered.toLowerCase())
+        )
+      );
+    }
+  }, [filtered, people]);
 
   return (
     <div className="mx-auto max-w-screen-md m-10">
@@ -69,9 +96,17 @@ function App() {
         </button>
       </form>
       <div className="flex flex-col mt-6">
-        <h2 className="text-xl font-semibold">People</h2>
-        {people
-          .sort((a, b) => (a.name > b.name ? 1 : -1))
+        <div className="flex justify-between">
+          <h2 className="text-xl font-semibold">People</h2>
+          <input
+            className="px-2 py-1 border rounded-md"
+            placeholder="Filter"
+            value={filtered}
+            onChange={(e) => setFiltered(e.target.value)}
+          />
+        </div>
+        {phonebook
+          .sort((a: IPeople, b: IPeople) => (a.name > b.name ? 1 : -1))
           .map((i: any, k: number) => {
             return (
               <p key={k} className="capitalize">
