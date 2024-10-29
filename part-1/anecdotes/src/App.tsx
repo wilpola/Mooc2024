@@ -27,12 +27,6 @@ function App() {
   };
 
   const handleVote = () => {
-    // setVotes(
-    //   votes.map((vote) => {
-    //     console.log(vote);
-    //     return vote;
-    //   })
-    // );
     let newVotes = [...votes];
     newVotes[selected] += 1;
     setVotes(newVotes);
