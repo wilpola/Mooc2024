@@ -1,8 +1,8 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Form, PhoneBook } from "./components";
 
 // import db
-import db from "./db.json";
+import axios from "axios";
 
 export interface IPeople {
   id: number;
@@ -11,7 +11,7 @@ export interface IPeople {
 }
 
 function App() {
-  const [people, setPeople] = useState<IPeople[]>([...db.persons]);
+  const [people, setPeople] = useState<IPeople[]>([]);
   const [counter, setCounter] = useState<number>(4);
   const [newPerson, setNewPerson] = useState<IPeople>({
     name: "",
@@ -20,6 +20,16 @@ function App() {
   });
   const [filtered, setFiltered] = useState<string>("");
   const [phonebook, setPhoneBook] = useState<any>(people);
+
+  useEffect(() => {
+    axios
+      .get("http://localhost:3001/persons")
+      .then((result: any) => {
+        console.log(result.data);
+        setPeople(result.data);
+      })
+      .catch((err) => console.log(err));
+  }, []);
 
   return (
     <div className="mx-auto max-w-screen-md m-10 w-[95%]">
@@ -32,13 +42,15 @@ function App() {
         counter={counter}
         setCounter={setCounter}
       />
-      <PhoneBook
-        filtered={filtered}
-        setFiltered={setFiltered}
-        phonebook={phonebook}
-        people={people}
-        setPhoneBook={setPhoneBook}
-      />
+      {people.length > 0 && (
+        <PhoneBook
+          filtered={filtered}
+          setFiltered={setFiltered}
+          phonebook={phonebook}
+          people={people}
+          setPhoneBook={setPhoneBook}
+        />
+      )}
     </div>
   );
 }
