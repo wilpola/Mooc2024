@@ -7,7 +7,7 @@
 import { Trash2 } from "lucide-react";
 import { useEffect } from "react";
 
-import peopleProvider from '../services/people';
+import peopleProvider from "../services/people";
 
 interface IPeople {
   id: number;
@@ -66,7 +66,16 @@ export const PhoneBook = ({
                     <td className="capitalize pl-2">{i.name}</td>
                     <td className="capitalize">{i?.phone}</td>
                     <td className="mx-auto">
-                      <Trash2 className="w-full hover:cursor-pointer hover:text-red-500" onClick={() => peopleProvider.remove(i.id)}/>
+                      <Trash2
+                        className="w-full hover:cursor-pointer hover:text-red-500"
+                        onClick={() => {
+                          if (confirm(`Delete ${i.name}?`)) {
+                            peopleProvider.remove(i.id);
+                          } else {
+                            return;
+                          }
+                        }}
+                      />
                     </td>
                   </tr>
                 );
