@@ -5,6 +5,9 @@
 
 import IPeople from "../App";
 
+// import modules
+import axios from "axios";
+
 export const Form = ({
   newPerson,
   setNewPerson,
@@ -35,6 +38,10 @@ export const Form = ({
         ]);
         setNewPerson({ name: "", phone: "", id: counter });
         setCounter(counter + 1);
+        axios
+          .post("http://localhost:3001/persons", newPerson)
+          .then((response) => console.log(response))
+          .catch((err) => console.log(err));
       }
     }
   };

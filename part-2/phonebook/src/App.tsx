@@ -4,6 +4,9 @@ import { Form, PhoneBook } from "./components";
 // import db
 import axios from "axios";
 
+// import backend code "services"
+import peopleProvider from "./services/people";
+
 export interface IPeople {
   id: number;
   name: string;
@@ -21,13 +24,16 @@ function App() {
   const [filtered, setFiltered] = useState<string>("");
   const [phonebook, setPhoneBook] = useState<any>(people);
 
+
+  /**
+   * Get data from the "server"
+   * @returns updated state with people
+   * @author wilpola
+   */
   useEffect(() => {
-    axios
-      .get("http://localhost:3001/persons")
-      .then((result: any) => {
-        console.log(result.data);
-        setPeople(result.data);
-      })
+    peopleProvider
+      .getAll()
+      .then((response) => setPeople(response.data))
       .catch((err) => console.log(err));
   }, []);
 
