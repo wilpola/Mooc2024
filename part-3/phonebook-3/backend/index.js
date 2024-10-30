@@ -39,14 +39,24 @@ app.get("/api/get/phonebook", (req, res) => {
 });
 
 app.get("/info", (req, res) => {
-
-    let date = new Date();
+  let date = new Date();
   res.send(
     `<div> 
         <p>Phonebook has info for ${phonebook.length} people</p> 
         <p>${date}</p>
     </div>`
   );
+});
+
+/** 
+ * Get single person 
+ * 
+ * @return Completes 3.3
+ */ 
+app.get("/api/persons/:id", (req, res) => {
+  const id = req.params.id;
+  const person = phonebook.find((person) => person.id === id);
+  res.status(200).json(person);
 });
 
 app.listen(PORT, () => {
