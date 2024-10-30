@@ -6,6 +6,7 @@ const PORT = 8080;
 // allow cors
 const cors = require("cors");
 app.use(cors());
+app.use(express.json());
 
 let phonebook = [
   {
@@ -34,7 +35,7 @@ app.get("/api/hello", (req, res) => {
   res.send("<h1>Hello World!</h1>");
 });
 
-app.get("/api/get/phonebook", (req, res) => {
+app.get("/api/persons", (req, res) => {
   res.json(phonebook);
 });
 
@@ -71,6 +72,28 @@ app.delete("/api/delete/persons/:id", (req, res) => {
   res.status(204).end();
 });
 
+/**
+ * Add people to the phonebook
+ *
+ * @return Completes 3.5
+ * @Note This data only persists for as long as the server hasn't been restarted
+ */
+app.post("/api/create/person", (req, res) => {
+  const { name, number } = req.body;
+  // Create "random" id
+  const id = Math.floor(Math.random() * 1000000);
+
+  // Add the person to the phonebook
+  phonebook = [...phonebook, { id: id, name: name, number: number }];
+
+  // Log what is being inputted
+  console.log({ id: id, name: name, number: number });
+
+  // Send a message to the person that the new user has been added to the database
+  res.status(200).json({ msg: `${name} added to the phonebook` });
+});
+
+// Listen for traffic
 app.listen(PORT, () => {
   console.log(`Server listening on ${PORT}`);
 });
