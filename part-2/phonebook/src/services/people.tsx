@@ -1,5 +1,6 @@
 import axios from "axios";
 const baseUrl = "http://localhost:3001/persons";
+const idURL = "http://localhost:3001/nextId";
 
 // import types
 import { IPeople } from "../App";
@@ -8,21 +9,31 @@ const getAll = () => {
   return axios.get(baseUrl);
 };
 
-const create = (newObject: IPeople) => {
+const create = (newObject: IPeople, nextId: number) => {
+  axios.put(idURL, {id: nextId + 1});
   return axios.post(baseUrl, newObject);
 };
 
-const update = (id: number, newObject: IPeople) => {
+const getId = () => {
+  return axios.get(idURL);
+};
+
+const updateId = (id: number) => {
+  return axios.put(idURL, id + 1);
+};
+const update = (id: string, newObject: IPeople) => {
   return axios.put(`${baseUrl}/${id}`, newObject);
 };
 
 const remove = (id: number) => {
-    return axios.delete(`${baseUrl}/${id}`)
-}
+  return axios.delete(`${baseUrl}/${id}`);
+};
 
 export default {
   getAll: getAll,
   create: create,
   update: update,
-  remove: remove
+  remove: remove,
+  getId: getId,
+  updateId: updateId,
 };

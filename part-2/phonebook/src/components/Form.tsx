@@ -4,17 +4,14 @@
  */
 
 import IPeople from "../App";
-
-// import modules
-import axios from "axios";
+import peopleProvider from "../services/people";
 
 export const Form = ({
   newPerson,
   setNewPerson,
   people,
   setPeople,
-  counter,
-  setCounter,
+  nextId,
 }: any) => {
   const handleAddition = (e: any) => {
     e.preventDefault(); // Prevent refresh
@@ -30,17 +27,43 @@ export const Form = ({
           person.name.toLowerCase() === newPerson.name.toLowerCase() // Check each with as a lowercase
       );
       if (duplicate) {
-        alert(`Person "${newPerson}" is already in the database.`);
+        if (
+          confirm(
+            `${newPerson.name} is already added to the phonebook. \nWould you like to replace the old number with the provided new one?`
+          )
+        ) {
+          setPeople([
+            ...people,
+            {
+              name: newPerson.name,
+              phone: newPerson.phone,
+              id: nextId.toString(),
+            },
+          ]);
+          console.log(people.indexOf(newPerson.name)                      );
+          peopleProvider
+            .update(people.indexOf(newPerson.name), newPerson)
+            .then((res) => {
+              console.log(res);
+              setNewPerson({ name: "", phone: "", id: nextId });
+            })
+            .catch((err) => console.log(err));
+        }
       } else {
         setPeople([
           ...people,
-          { name: newPerson.name, phone: newPerson.phone, id: counter + 1 },
+          {
+            name: newPerson.name,
+            phone: newPerson.phone,
+            id: nextId.toString(),
+          },
         ]);
-        setNewPerson({ name: "", phone: "", id: counter });
-        setCounter(counter + 1);
-        axios
-          .post("http://localhost:3001/persons", newPerson)
-          .then((response) => console.log(response))
+        peopleProvider
+          .create(newPerson, nextId)
+          .then((res) => {
+            console.log(res);
+            setNewPerson({ name: "", phone: "", id: nextId });
+          })
           .catch((err) => console.log(err));
       }
     }

@@ -37,8 +37,9 @@ export const PhoneBook = ({
   return (
     <>
       <div className="flex flex-col mt-6">
-        <div className="flex justify-between">
+        <div className="flex justify-between mb-2">
           <h2 className="text-xl font-semibold">People</h2>
+          {/* Filter the people in the phonebook */}
           <input
             className="px-2 py-1 border rounded-md"
             placeholder="Filter"

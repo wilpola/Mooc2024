@@ -1,29 +1,25 @@
 import { useEffect, useState } from "react";
 import { Form, PhoneBook } from "./components";
 
-// import db
-import axios from "axios";
-
 // import backend code "services"
 import peopleProvider from "./services/people";
 
 export interface IPeople {
-  id: number;
+  id: any;
   name: string;
   phone?: string;
 }
 
 function App() {
   const [people, setPeople] = useState<IPeople[]>([]);
-  const [counter, setCounter] = useState<number>(4);
+  const [nextId, setNextId] = useState<any>("");
   const [newPerson, setNewPerson] = useState<IPeople>({
     name: "",
     phone: "",
-    id: counter,
+    id: nextId,
   });
   const [filtered, setFiltered] = useState<string>("");
   const [phonebook, setPhoneBook] = useState<any>(people);
-
 
   /**
    * Get data from the "server"
@@ -37,6 +33,16 @@ function App() {
       .catch((err) => console.log(err));
   }, []);
 
+  useEffect(() => {
+    peopleProvider
+      .getId()
+      .then((res) => {
+        setNewPerson({ ...newPerson, id: `${res.data.id}` });
+        setNextId(res.data.id);
+      })
+      .catch((err) => console.log(err));
+  }, []);
+
   return (
     <div className="mx-auto max-w-screen-md m-10 w-[95%]">
       <h1 className="text-2xl font-semibold">Phonebook</h1>
@@ -45,8 +51,7 @@ function App() {
         setNewPerson={setNewPerson}
         people={people}
         setPeople={setPeople}
-        counter={counter}
-        setCounter={setCounter}
+        nextId={nextId}
       />
       {people.length > 0 && (
         <PhoneBook
@@ -57,6 +62,7 @@ function App() {
           setPhoneBook={setPhoneBook}
         />
       )}
+      <button onClick={() => console.log(nextId)}>Debug</button>
     </div>
   );
 }
