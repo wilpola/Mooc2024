@@ -32,6 +32,12 @@ export const Form = ({
             `${newPerson.name} is already added to the phonebook. \nWould you like to replace the old number with the provided new one?`
           )
         ) {
+          // Find the id of the matching object in the database
+          const obj = people.find(
+            (x: any) => x.name.toLowerCase() === newPerson.name.toLowerCase()
+          );
+
+          // Add to People
           setPeople([
             ...people,
             {
@@ -40,9 +46,10 @@ export const Form = ({
               id: nextId.toString(),
             },
           ]);
-          console.log(people.indexOf(newPerson.name)                      );
+
+          // Post to the "database"
           peopleProvider
-            .update(people.indexOf(newPerson.name), newPerson)
+            .update(obj.id, newPerson)
             .then((res) => {
               console.log(res);
               setNewPerson({ name: "", phone: "", id: nextId });
@@ -58,6 +65,7 @@ export const Form = ({
             id: nextId.toString(),
           },
         ]);
+        
         peopleProvider
           .create(newPerson, nextId)
           .then((res) => {
