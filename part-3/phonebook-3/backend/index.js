@@ -75,7 +75,7 @@ app.delete("/api/delete/persons/:id", (req, res) => {
 /**
  * Add people to the phonebook
  *
- * @return Completes 3.5
+ * @return Completes 3.5 & 3.6
  * @Note This data only persists for as long as the server hasn't been restarted
  */
 app.post("/api/create/person", (req, res) => {
@@ -83,14 +83,30 @@ app.post("/api/create/person", (req, res) => {
   // Create "random" id
   const id = Math.floor(Math.random() * 1000000);
 
-  // Add the person to the phonebook
-  phonebook = [...phonebook, { id: id, name: name, number: number }];
+  // Check for duplicates
+  const nova = phonebook.find(
+    (person) => person.name.toLowerCase() === name.toLowerCase()
+  );
+
+  if (nova) {
+    console.log("nova: ", nova);
+    return res
+      .status(409)
+      .json({ msg: "This person is already in the database" });
+  }
+
+  // If the number is missing
+  if (!number) {
+    return res.status(403).json({ msg: "Missing phone number" });
+  }
 
   // Log what is being inputted
   console.log({ id: id, name: name, number: number });
 
+  // Add the person to the phonebook
+  phonebook = [...phonebook, { id: id, name: name, number: number }];
   // Send a message to the person that the new user has been added to the database
-  res.status(200).json({ msg: `${name} added to the phonebook` });
+  return res.status(200).json({ msg: `${name} added to the phonebook` });
 });
 
 // Listen for traffic
