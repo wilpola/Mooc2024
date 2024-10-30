@@ -8,6 +8,13 @@ const cors = require("cors");
 app.use(cors());
 app.use(express.json());
 
+/** 
+ * Add morgan
+ * @returns completes 3.7
+ */ 
+var morgan = require('morgan');
+app.use(morgan("tiny"));
+
 let phonebook = [
   {
     id: "1",
