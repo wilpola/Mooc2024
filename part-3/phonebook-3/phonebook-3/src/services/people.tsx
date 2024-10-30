@@ -1,12 +1,12 @@
 import axios from "axios";
-const baseUrl = "http://localhost:8080/api/";
+const baseUrl = "http://localhost:8080/api";
 const idURL = "http://localhost:3001/nextId";
 
 // import types
 import { IPeople } from "../App";
 
 const getAll = () => {
-  return axios.get(`${baseUrl}get/phonebook`);
+  return axios.get(`${baseUrl}/persons`);
 };
 
 const create = (newObject: IPeople, nextId: number) => {
