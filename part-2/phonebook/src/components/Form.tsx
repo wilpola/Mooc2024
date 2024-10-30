@@ -65,7 +65,7 @@ export const Form = ({
             id: nextId.toString(),
           },
         ]);
-        
+
         peopleProvider
           .create(newPerson, nextId)
           .then((res) => {
