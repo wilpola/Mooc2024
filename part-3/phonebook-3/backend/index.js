@@ -4,8 +4,8 @@ const app = express();
 const PORT = 8080;
 
 // allow cors
-const cors = require('cors');
-app.use(cors())
+const cors = require("cors");
+app.use(cors());
 
 let phonebook = [
   {
@@ -36,6 +36,17 @@ app.get("/api/hello", (req, res) => {
 
 app.get("/api/get/phonebook", (req, res) => {
   res.json(phonebook);
+});
+
+app.get("/info", (req, res) => {
+
+    let date = new Date();
+  res.send(
+    `<div> 
+        <p>Phonebook has info for ${phonebook.length} people</p> 
+        <p>${date}</p>
+    </div>`
+  );
 });
 
 app.listen(PORT, () => {
