@@ -48,15 +48,27 @@ app.get("/info", (req, res) => {
   );
 });
 
-/** 
- * Get single person 
- * 
+/**
+ * Get single person
+ *
  * @return Completes 3.3
- */ 
+ */
 app.get("/api/persons/:id", (req, res) => {
   const id = req.params.id;
   const person = phonebook.find((person) => person.id === id);
   res.status(200).json(person);
+});
+
+/**
+ * Delete specific person
+ *
+ * @returns Completes 3.4
+ */
+app.delete("/api/delete/persons/:id", (req, res) => {
+  const id = req.params.id;
+  phonebook = phonebook.filter((person) => person.id !== id);
+
+  res.status(204).end();
 });
 
 app.listen(PORT, () => {
