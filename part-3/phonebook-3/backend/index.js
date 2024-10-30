@@ -8,12 +8,13 @@ const cors = require("cors");
 app.use(cors());
 app.use(express.json());
 
-/** 
+/**
  * Add morgan
  * @returns completes 3.7
- */ 
-var morgan = require('morgan');
-app.use(morgan("tiny"));
+ */
+var morgan = require("morgan");
+morgan.token("body", (req) => JSON.stringify(req.body));
+app.use(morgan(":method :url :status :body - :response-time ms"));
 
 let phonebook = [
   {
@@ -73,11 +74,17 @@ app.get("/api/persons/:id", (req, res) => {
  * @returns Completes 3.4
  */
 app.delete("/api/delete/persons/:id", (req, res) => {
+  // Get the id from the params
   const id = req.params.id;
+  
+  // Remove the item from the "database"
   phonebook = phonebook.filter((person) => person.id !== id);
 
+  // Send status, and end connection
   res.status(204).end();
 });
+
+
 
 /**
  * Add people to the phonebook
@@ -96,7 +103,7 @@ app.post("/api/create/person", (req, res) => {
   );
 
   if (nova) {
-    console.log("nova: ", nova);
+    // console.log("nova: ", nova);
     return res
       .status(409)
       .json({ msg: "This person is already in the database" });
@@ -112,6 +119,7 @@ app.post("/api/create/person", (req, res) => {
 
   // Add the person to the phonebook
   phonebook = [...phonebook, { id: id, name: name, number: number }];
+
   // Send a message to the person that the new user has been added to the database
   return res.status(200).json({ msg: `${name} added to the phonebook` });
 });
