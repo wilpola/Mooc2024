@@ -76,15 +76,13 @@ app.get("/api/persons/:id", (req, res) => {
 app.delete("/api/delete/persons/:id", (req, res) => {
   // Get the id from the params
   const id = req.params.id;
-  
+
   // Remove the item from the "database"
   phonebook = phonebook.filter((person) => person.id !== id);
 
   // Send status, and end connection
   res.status(204).end();
 });
-
-
 
 /**
  * Add people to the phonebook
@@ -115,10 +113,10 @@ app.post("/api/create/person", (req, res) => {
   }
 
   // Log what is being inputted
-  console.log({ id: id, name: name, number: number });
+  console.log({ id: id.toString(), name: name, number: number });
 
   // Add the person to the phonebook
-  phonebook = [...phonebook, { id: id, name: name, number: number }];
+  phonebook = [...phonebook, { id: id.toString(), name: name, number: number }];
 
   // Send a message to the person that the new user has been added to the database
   return res.status(200).json({ msg: `${name} added to the phonebook` });

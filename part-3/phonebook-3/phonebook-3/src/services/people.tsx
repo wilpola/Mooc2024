@@ -9,8 +9,8 @@ const getAll = () => {
   return axios.get(`${baseUrl}/persons`);
 };
 
-const create = (newObject: IPeople, nextId: number) => {
-  axios.put(idURL, {id: nextId + 1});
+const create = (newObject: IPeople) => {
+  axios.put(idURL);
   return axios.post(baseUrl, newObject);
 };
 
