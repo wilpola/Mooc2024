@@ -3,7 +3,9 @@
  * @author wilpola
  */
 
+import React from "react";
 import peopleProvider from "../services/people";
+import { Button } from "@/components/ui/button";
 
 export const Form = ({ newPerson, setNewPerson, people, setPeople }: any) => {
   const handleAddition = (
@@ -61,12 +63,12 @@ export const Form = ({ newPerson, setNewPerson, people, setPeople }: any) => {
           }
         />
       </div>
-      <button
+      <Button
         className="text-white mt-2 py-2 px-4 bg-slate-700 hover:bg-slate-800"
         onClick={(e) => handleAddition(e)}
       >
         Add to Phonebook
-      </button>
+      </Button>
     </form>
   );
 };

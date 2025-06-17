@@ -6,6 +6,7 @@
 
 import { Trash2 } from "lucide-react";
 import { useEffect } from "react";
+import { Button } from "@/components/ui/button";
 
 import peopleProvider from "../services/people";
 
@@ -67,8 +68,10 @@ export const PhoneBook = ({
                     <td className="capitalize pl-2">{i.name}</td>
                     <td className="capitalize">{i?.number}</td>
                     <td className="mx-auto">
-                      <Trash2
-                        className="w-full hover:cursor-pointer hover:text-red-500"
+                      <Button
+                        asChild
+                        variant="ghost"
+                        size={"icon"}
                         onClick={() => {
                           if (confirm(`Delete ${i.name}?`)) {
                             peopleProvider.remove(i.id).then(() => {
@@ -77,12 +80,17 @@ export const PhoneBook = ({
                                   (person: IPeople) => person.id !== i.id
                                 )
                               );
-                            })
+                            });
                           } else {
                             return;
                           }
                         }}
-                      />
+                      >
+                        <Trash2
+                          className="w-full hover:cursor-pointer hover:text-red-500"
+
+                        />
+                      </Button>
                     </td>
                   </tr>
                 );
