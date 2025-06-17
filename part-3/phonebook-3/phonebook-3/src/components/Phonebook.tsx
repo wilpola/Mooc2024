@@ -20,7 +20,7 @@ import {
   AlertDialogHeader,
   AlertDialogFooter,
 } from "@/components/ui/alert-dialog";
-import { toast } from "sonner"
+import { toast } from "sonner";
 
 interface IPeople {
   id: number;
@@ -34,7 +34,7 @@ export const PhoneBook = ({
   phonebook,
   setPhoneBook,
   people,
-  setPeople
+  setPeople,
 }: any) => {
   // Update based on filtered content
   useEffect(() => {
@@ -52,7 +52,7 @@ export const PhoneBook = ({
     <>
       <div className="flex flex-col mt-6">
         <div className="flex justify-between mb-2">
-          <h2 className="text-xl font-semibold">People</h2>
+          <h2 className="text-xl font-semibold">People ({phonebook.length})</h2>
           {/* Filter the people in the phonebook */}
           <input
             className="px-2 py-1 border rounded-md"
@@ -66,7 +66,7 @@ export const PhoneBook = ({
             <tr className="font-semibold bg-gray-300">
               <td className="pl-2">Name</td>
               <td>Number</td>
-              <td className="w-[80px]">Actions</td>
+              <td className="w-[80px] text-center">Actions</td>
             </tr>
           </thead>
           <tbody>
@@ -80,13 +80,12 @@ export const PhoneBook = ({
                   >
                     <td className="capitalize pl-2">{i.name}</td>
                     <td className="capitalize">{i?.number}</td>
-                    <td className="mx-auto w-[32px]">
+                    <td className="mx-auto w-[80px] h-full flex justify-center items-center py-1">
                       <AlertDialog>
                         <AlertDialogTrigger asChild>
-                          <Button variant="ghost" asChild size={"icon"}>
+                          <Button variant="ghost" asChild className=" w-[40px] mx-auto hover:bg-neutral-100 px-1" size={"default"}>
                             <Trash2
-                              className="w-[20px] hover:cursor-pointer hover:text-red-500"
-                              size={14}
+                              className="w-[20px] hover:cursor-pointer hover:text-red-600"
                               aria-label="Delete person"
                             />
                           </Button>
@@ -102,7 +101,9 @@ export const PhoneBook = ({
                             </AlertDialogDescription>
                           </AlertDialogHeader>
                           <AlertDialogFooter>
-                            <AlertDialogCancel className="border-neutral-400">Cancel</AlertDialogCancel>
+                            <AlertDialogCancel className="border-neutral-400">
+                              Cancel
+                            </AlertDialogCancel>
                             <AlertDialogAction
                               className="bg-red-500 text-white hover:bg-red-600"
                               onClick={() => {
@@ -118,7 +119,14 @@ export const PhoneBook = ({
                                     )
                                   );
                                 });
-                                toast.success(`${i.name} has been deleted.`);
+                                toast.success(`${i.name} has been deleted.`, {
+                                  action: {
+                                    label: "dismiss",
+                                    onClick: () => {
+                                      toast.dismiss();
+                                    },
+                                  },
+                                });
                               }}
                             >
                               Delete
