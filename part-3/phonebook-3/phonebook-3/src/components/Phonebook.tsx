@@ -21,6 +21,7 @@ import {
   AlertDialogFooter,
 } from "@/components/ui/alert-dialog";
 import { toast } from "sonner";
+import { Input } from "@/components/ui/input";
 
 interface IPeople {
   id: number;
@@ -54,9 +55,11 @@ export const PhoneBook = ({
         <div className="flex justify-between mb-2">
           <h2 className="text-xl font-semibold">People ({phonebook.length})</h2>
           {/* Filter the people in the phonebook */}
-          <input
-            className="px-2 py-1 border rounded-md"
-            placeholder="Filter"
+          <Input
+            className="px-2 py-1 border rounded-md max-w-[320px]"
+            placeholder="Filter by name"
+            type="text"
+            autoComplete="off"
             value={filtered}
             onChange={(e) => setFiltered(e.target.value)}
           />
