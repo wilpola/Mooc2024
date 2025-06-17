@@ -1,25 +1,25 @@
-import { useEffect, useState } from "react";
+import { SetStateAction, useEffect, useState } from "react";
 import { Form, PhoneBook } from "./components";
 
 // import backend code "services"
 import peopleProvider from "./services/people";
 
 export interface IPeople {
-  id: any;
+  id: number;
   name: string;
   phone?: string;
 }
 
 function App() {
   const [people, setPeople] = useState<IPeople[]>([]);
-  const [nextId, setNextId] = useState<any>("");
+  const [nextId, setNextId] = useState<number>(0);
   const [newPerson, setNewPerson] = useState<IPeople>({
     name: "",
     phone: "",
     id: nextId,
   });
   const [filtered, setFiltered] = useState<string>("");
-  const [phonebook, setPhoneBook] = useState<any>(people);
+  const [phonebook, setPhoneBook] = useState<IPeople[]>(people);
 
   /**
    * Get data from the "server"
@@ -29,18 +29,18 @@ function App() {
   useEffect(() => {
     peopleProvider
       .getAll()
-      .then((response) => setPeople(response.data))
-      .catch((err) => console.log(err));
+      .then((response: { data: SetStateAction<IPeople[]>; }) => setPeople(response.data))
+      .catch((err: unknown) => console.log(err));
   }, []);
 
   useEffect(() => {
     peopleProvider
       .getId()
-      .then((res) => {
+      .then((res: { data: { id: number; }; }) => {
         setNewPerson({ ...newPerson, id: `${res.data.id}` });
         setNextId(res.data.id);
       })
-      .catch((err) => console.log(err));
+      .catch((err: unknown) => console.log(err));
   }, []);
 
   return (
