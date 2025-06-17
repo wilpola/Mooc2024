@@ -133,7 +133,7 @@ app.post("/api/persons", (req, res) => {
   // Send a message to the person that the new user has been added to the database
   return res
     .status(200)
-    .json({ person: { id: id.toString(), name: name, number: number } });
+    .json({ person: { id: id, name: name, number: number } });
 });
 
 // Listen for traffic
