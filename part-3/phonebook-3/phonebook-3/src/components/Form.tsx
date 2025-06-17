@@ -7,6 +7,7 @@ import React from "react";
 import peopleProvider from "../services/people";
 import { Button } from "@/components/ui/button";
 import { Input } from "./ui/input";
+import { toast } from "sonner"
 
 export const Form = ({ newPerson, setNewPerson, people, setPeople }: any) => {
   const handleAddition = (
@@ -31,9 +32,9 @@ export const Form = ({ newPerson, setNewPerson, people, setPeople }: any) => {
         })
         .catch((err) => {
           if (err.response.status === 403) {
-            alert("Please fill all the fields correctly.");
+            toast.error("Please fill all the fields correctly.");
           } else if (err.response.status === 409) {
-            alert("This person is already in the database.");
+            toast.error("This person is already in the database.");
           } else {
             console.log(err);
           }

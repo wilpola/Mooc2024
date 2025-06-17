@@ -20,6 +20,7 @@ import {
   AlertDialogHeader,
   AlertDialogFooter,
 } from "@/components/ui/alert-dialog";
+import { toast } from "sonner"
 
 interface IPeople {
   id: number;
@@ -117,6 +118,7 @@ export const PhoneBook = ({
                                     )
                                   );
                                 });
+                                toast.success(`${i.name} has been deleted.`);
                               }}
                             >
                               Delete
