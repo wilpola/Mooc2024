@@ -71,7 +71,13 @@ export const PhoneBook = ({
                         className="w-full hover:cursor-pointer hover:text-red-500"
                         onClick={() => {
                           if (confirm(`Delete ${i.name}?`)) {
-                            peopleProvider.remove(i.id);
+                            peopleProvider.remove(i.id).then(() => {
+                              setPhoneBook(
+                                phonebook.filter(
+                                  (person: IPeople) => person.id !== i.id
+                                )
+                              );
+                            })
                           } else {
                             return;
                           }

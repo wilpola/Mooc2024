@@ -3,11 +3,14 @@
  * @author wilpola
  */
 
-import IPeople from "../App";
 import peopleProvider from "../services/people";
 
 export const Form = ({ newPerson, setNewPerson, people, setPeople }: any) => {
-  const handleAddition = (e: any) => {
+  const handleAddition = (
+    e:
+      | React.MouseEvent<HTMLButtonElement, MouseEvent>
+      | React.FormEvent<HTMLFormElement>
+  ) => {
     e.preventDefault(); // Prevent refresh
 
     /**
@@ -16,56 +19,21 @@ export const Form = ({ newPerson, setNewPerson, people, setPeople }: any) => {
      */
     // dont submit empty data
     if (newPerson.name !== "" && newPerson.name !== " ") {
-      const duplicate = people.find(
-        (person: typeof IPeople) =>
-          person.name.toLowerCase() === newPerson.name.toLowerCase() // Check each with as a lowercase
-      );
-      if (duplicate) {
-        if (
-          confirm(
-            `${newPerson.name} is already added to the phonebook. \nWould you like to replace the old number with the provided new one?`
-          )
-        ) {
-          // Find the id of the matching object in the database
-          const obj = people.find(
-            (x: any) => x.name.toLowerCase() === newPerson.name.toLowerCase()
-          );
-
-          // Add to People
-          setPeople([
-            ...people,
-            {
-              name: newPerson.name,
-              phone: newPerson.phone,
-            },
-          ]);
-
-          // Post to the "database"
-          peopleProvider
-            .update(obj.id, newPerson)
-            .then((res) => {
-              console.log(res);
-              setNewPerson({ name: "", phone: "" });
-            })
-            .catch((err) => console.log(err));
-        }
-      } else {
-        setPeople([
-          ...people,
-          {
-            name: newPerson.name,
-            phone: newPerson.phone,
-          },
-        ]);
-
-        peopleProvider
-          .create(newPerson)
-          .then((res) => {
-            console.log(res);
-            setNewPerson({ name: "", phone: "" });
-          })
-          .catch((err) => console.log(err));
-      }
+      peopleProvider
+        .create(newPerson)
+        .then((res) => {
+          setPeople(people.concat(res.data.person));
+          setNewPerson({ name: "", number: "" });
+        })
+        .catch((err) => {
+          if (err.response.status === 403) {
+            alert("Please fill all the fields correctly.");
+          } else if (err.response.status === 409) {
+            alert("This person is already in the database.");
+          } else {
+            console.log(err);
+          }
+        });
     }
   };
 
@@ -87,9 +55,9 @@ export const Form = ({ newPerson, setNewPerson, people, setPeople }: any) => {
           id="number"
           className="px-2 py-1 border border-slate-400 rounded-md"
           placeholder="Phone"
-          value={newPerson.phone}
+          value={newPerson.number}
           onChange={(e) =>
-            setNewPerson({ ...newPerson, phone: e.target.value })
+            setNewPerson({ ...newPerson, number: e.target.value })
           }
         />
       </div>

@@ -13,7 +13,7 @@ import { Form, PhoneBook } from "./components";
 // Types
 export interface IPeople {
   name: string;
-  id: string;
+  id: string | null;
   number: string;
 }
 
@@ -25,7 +25,7 @@ function App() {
     id: "",
   });
   const [filtered, setFiltered] = useState<string>("");
-  const [phonebook, setPhoneBook] = useState<any>(people);
+  const [phonebook, setPhoneBook] = useState<IPeople[]>(people);
 
   /**
    * Get data from the "server"
@@ -45,16 +45,20 @@ function App() {
 
       <div className="mx-auto max-w-screen-md m-10 w-[95%]">
         <h1 className="text-2xl font-semibold">FullStack Phonebook</h1>
-        <div className="rounded-md py-4 px-4 bg-neutral-200 shadow-md shadow-neutral-200 my-3">
+        <div className="rounded-md py-4 px-4 bg-neutral-100 shadow-md shadow-neutral-200 my-3">
           <p className="text-base font-normal">
             {" "}
             This is my implementation for the full stack phonebook assignment as
             part of the fullstack open course. This completes the 3rd part of
             the course.
             <br />
-            <span className="text-indigo-700">
+            <span>
               @author:{" "}
-              <a href="https://github.com/wilpola" target="_blank">
+              <a
+                href="https://github.com/wilpola"
+                target="_blank"
+                className="text-indigo-700"
+                rel="noreferrer">
                 wilpola
               </a>
             </span>

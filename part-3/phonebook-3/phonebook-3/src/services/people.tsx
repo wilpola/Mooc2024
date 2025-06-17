@@ -1,5 +1,5 @@
 import axios from "axios";
-const baseUrl = "http://localhost:8080/api";
+const baseUrl = "http://localhost:3001/api";
 const idURL = "http://localhost:3001/nextId";
 
 // import types
@@ -10,8 +10,7 @@ const getAll = () => {
 };
 
 const create = (newObject: IPeople) => {
-  axios.put(idURL);
-  return axios.post(baseUrl, newObject);
+  return axios.post(`${baseUrl}/persons`, newObject);
 };
 
 const getId = () => {
@@ -26,7 +25,7 @@ const update = (id: string, newObject: IPeople) => {
 };
 
 const remove = (id: number) => {
-  return axios.delete(`${baseUrl}/${id}`);
+  return axios.delete(`${baseUrl}/persons/${id}`);
 };
 
 export default {
