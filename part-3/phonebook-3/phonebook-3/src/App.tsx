@@ -77,6 +77,7 @@ function App() {
             phonebook={phonebook}
             people={people}
             setPhoneBook={setPhoneBook}
+            setPeople={setPeople}
           />
         )}
       </div>

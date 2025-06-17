@@ -6,6 +6,7 @@
 import React from "react";
 import peopleProvider from "../services/people";
 import { Button } from "@/components/ui/button";
+import { Input } from "./ui/input";
 
 export const Form = ({ newPerson, setNewPerson, people, setPeople }: any) => {
   const handleAddition = (
@@ -25,6 +26,7 @@ export const Form = ({ newPerson, setNewPerson, people, setPeople }: any) => {
         .create(newPerson)
         .then((res) => {
           setPeople(people.concat(res.data.person));
+          
           setNewPerson({ name: "", number: "" });
         })
         .catch((err) => {
@@ -43,20 +45,36 @@ export const Form = ({ newPerson, setNewPerson, people, setPeople }: any) => {
     <form onSubmit={(e) => handleAddition(e)}>
       <div className="flex flex-col justify-start">
         <label htmlFor="name">Name</label>
-        <input
+        <Input
           id="name"
           className="px-2 py-1 border border-slate-400 rounded-md"
           placeholder="First last"
+          autoCapitalize="off"
+          autoComplete="off"
+          autoCorrect="off"
+          spellCheck="false"
+          autoFocus
+          name="name"
+          type="text"
+          required
+          pattern="[a-zA-ZÀ-ÖØ-öø-ÿ\s]+"
           value={newPerson.name}
           onChange={(e) => setNewPerson({ ...newPerson, name: e.target.value })}
         />
       </div>
       <div className="flex flex-col justify-start">
         <label htmlFor="number">Phone</label>
-        <input
+        <Input
           id="number"
           className="px-2 py-1 border border-slate-400 rounded-md"
           placeholder="Phone"
+          autoComplete="off"
+          autoCorrect="off"
+          spellCheck="false"
+          name="number"
+          type="tel"
+          required
+          pattern="^\+?[0-9\s]+$"
           value={newPerson.number}
           onChange={(e) =>
             setNewPerson({ ...newPerson, number: e.target.value })

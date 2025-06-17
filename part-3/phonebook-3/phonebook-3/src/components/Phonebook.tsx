@@ -9,6 +9,17 @@ import { useEffect } from "react";
 import { Button } from "@/components/ui/button";
 
 import peopleProvider from "../services/people";
+import {
+  AlertDialog,
+  AlertDialogTrigger,
+  AlertDialogContent,
+  AlertDialogTitle,
+  AlertDialogDescription,
+  AlertDialogCancel,
+  AlertDialogAction,
+  AlertDialogHeader,
+  AlertDialogFooter,
+} from "@/components/ui/alert-dialog";
 
 interface IPeople {
   id: number;
@@ -22,6 +33,7 @@ export const PhoneBook = ({
   phonebook,
   setPhoneBook,
   people,
+  setPeople
 }: any) => {
   // Update based on filtered content
   useEffect(() => {
@@ -48,7 +60,7 @@ export const PhoneBook = ({
             onChange={(e) => setFiltered(e.target.value)}
           />
         </div>
-        <table className="outline outline-1 rounded-md overflow-hidden outline-slate-200 inset-1 shadow-md shadow-neutral-300">
+        <table className="rounded-sm overflow-hidden outline-slate-200 inset-1 shadow-md shadow-neutral-300">
           <thead>
             <tr className="font-semibold bg-gray-300">
               <td className="pl-2">Name</td>
@@ -63,34 +75,55 @@ export const PhoneBook = ({
                 return (
                   <tr
                     key={k}
-                    className="even:bg-slate-200 odd:bg-white last:rounded-b-md h-10 hover:bg-blue-200 hover:cursor-pointer"
+                    className="even:bg-slate-200 odd:bg-white last:rounded-b-sm h-10 hover:cursor-pointer"
                   >
                     <td className="capitalize pl-2">{i.name}</td>
                     <td className="capitalize">{i?.number}</td>
-                    <td className="mx-auto">
-                      <Button
-                        asChild
-                        variant="ghost"
-                        size={"icon"}
-                        onClick={() => {
-                          if (confirm(`Delete ${i.name}?`)) {
-                            peopleProvider.remove(i.id).then(() => {
-                              setPhoneBook(
-                                phonebook.filter(
-                                  (person: IPeople) => person.id !== i.id
-                                )
-                              );
-                            });
-                          } else {
-                            return;
-                          }
-                        }}
-                      >
-                        <Trash2
-                          className="w-full hover:cursor-pointer hover:text-red-500"
-
-                        />
-                      </Button>
+                    <td className="mx-auto w-[32px]">
+                      <AlertDialog>
+                        <AlertDialogTrigger asChild>
+                          <Button variant="ghost" asChild size={"icon"}>
+                            <Trash2
+                              className="w-[20px] hover:cursor-pointer hover:text-red-500"
+                              size={14}
+                              aria-label="Delete person"
+                            />
+                          </Button>
+                        </AlertDialogTrigger>
+                        <AlertDialogContent className="bg-white">
+                          <AlertDialogHeader>
+                            <AlertDialogTitle>
+                              Are you absolutely sure?
+                            </AlertDialogTitle>
+                            <AlertDialogDescription>
+                              You are about to delete <strong>{i.name}</strong>{" "}
+                              from the phonebook. This action cannot be undone.
+                            </AlertDialogDescription>
+                          </AlertDialogHeader>
+                          <AlertDialogFooter>
+                            <AlertDialogCancel className="border-neutral-400">Cancel</AlertDialogCancel>
+                            <AlertDialogAction
+                              className="bg-red-500 text-white hover:bg-red-600"
+                              onClick={() => {
+                                peopleProvider.remove(i.id).then(() => {
+                                  setPhoneBook(
+                                    phonebook.filter(
+                                      (person: IPeople) => person.id !== i.id
+                                    )
+                                  );
+                                  setPeople(
+                                    phonebook.filter(
+                                      (person: IPeople) => person.id !== i.id
+                                    )
+                                  );
+                                });
+                              }}
+                            >
+                              Delete
+                            </AlertDialogAction>
+                          </AlertDialogFooter>
+                        </AlertDialogContent>
+                      </AlertDialog>
                     </td>
                   </tr>
                 );
