@@ -7,7 +7,7 @@ import React from "react";
 import peopleProvider from "../services/people";
 import { Button } from "@/components/ui/button";
 import { Input } from "./ui/input";
-import { toast } from "sonner"
+import { toast } from "sonner";
 
 export const Form = ({ newPerson, setNewPerson, people, setPeople }: any) => {
   const handleAddition = (
@@ -27,14 +27,39 @@ export const Form = ({ newPerson, setNewPerson, people, setPeople }: any) => {
         .create(newPerson)
         .then((res) => {
           setPeople(people.concat(res.data.person));
-          
+
           setNewPerson({ name: "", number: "" });
+          toast(
+            <div className="w-full">
+              <h2 className="text-base font-semibold">
+                Person added to the phonebook
+              </h2>
+              <p className="text-xs text-slate-500">ID: {res.data.person.id}</p>
+              <div className="bg-neutral-800 rounded-md p-2 mt-2 text-white w-full">
+                <code className="font-normal">
+                  Name: {res.data.person.name} <br />
+                  Phone: {res.data.person.number}
+                </code>
+              </div>
+            </div>,
+            {
+              duration: 3000,
+              icon: "👍",
+              position: "bottom-right",
+            }
+          );
         })
         .catch((err) => {
           if (err.response.status === 403) {
-            toast.error("Please fill all the fields correctly.");
+            toast.error("Please fill all the fields correctly.", {
+              position: "top-center",
+              richColors: true,
+            });
           } else if (err.response.status === 409) {
-            toast.error("This person is already in the database.");
+            toast.error("This person is already in the phonebook.", {
+              position: "top-center",
+              richColors: true,
+            });
           } else {
             console.log(err);
           }

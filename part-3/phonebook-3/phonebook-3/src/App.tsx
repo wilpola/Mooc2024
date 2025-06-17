@@ -42,7 +42,7 @@ function App() {
 
   return (
     <>
-    <Toaster richColors position={"top-center"} />
+    <Toaster />
       <div className="m-10 max-w-screen-md mx-auto"></div>
 
       <div className="mx-auto max-w-screen-md m-10 w-[95%]">

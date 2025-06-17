@@ -122,18 +122,18 @@ app.post("/api/persons", (req, res) => {
   }
 
   // Create "random" id
-  const id = Math.floor(Math.random() * 1000000);
+  const id = generateId();
 
   // Log what is being inputted
   console.log({ id: id.toString(), name: name, number: number });
 
   // Add the person to the phonebook
-  phonebook = [...phonebook, { id: generateId(), name: name, number: number }];
+  phonebook = [...phonebook, { id: id, name: name, number: number }];
 
   // Send a message to the person that the new user has been added to the database
   return res
     .status(200)
-    .json({ person: { id: id.toString(), name: name, number: number } });
+    .json({ person: { id: id, name: name, number: number } });
 });
 
 // Listen for traffic
