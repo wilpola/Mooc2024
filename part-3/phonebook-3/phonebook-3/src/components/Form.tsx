@@ -26,7 +26,7 @@ export const Form = ({ newPerson, setNewPerson, people, setPeople }: any) => {
       peopleProvider
         .create(newPerson)
         .then((res) => {
-          setPeople(people.concat(res.data.person));
+          setPeople(people.concat(res.data));
 
           setNewPerson({ name: "", number: "" });
           toast(
@@ -34,11 +34,11 @@ export const Form = ({ newPerson, setNewPerson, people, setPeople }: any) => {
               <h2 className="text-base font-semibold">
                 Person added to the phonebook
               </h2>
-              <p className="text-xs text-slate-500">ID: {res.data.person.id}</p>
+              <p className="text-xs text-slate-500">ID: {res.data.id}</p>
               <div className="bg-neutral-800 rounded-md p-2 mt-2 text-white w-full">
                 <code className="font-normal">
-                  Name: {res.data.person.name} <br />
-                  Phone: {res.data.person.number}
+                  Name: {res.data.name} <br />
+                  Phone: {res.data.number}
                 </code>
               </div>
             </div>,

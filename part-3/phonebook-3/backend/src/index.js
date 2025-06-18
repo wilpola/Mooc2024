@@ -3,7 +3,11 @@ const express = require("express");
 const app = express();
 const PORT = process.env.PORT | 3001;
 
-const routePrefix = process.env.NODE_ENV === 'production' ? "/api/v1" : "/api";
+const routePrefix = process.env.NODE_ENV === "production" ? "/api/v1" : "/api";
+
+// 3.13
+// Import mongo model
+const Person = require("./models/person");
 
 // allow cors
 const cors = require("cors");
@@ -15,6 +19,7 @@ app.use(express.json());
  * @returns completes 3.7
  */
 var morgan = require("morgan");
+const person = require("./models/person");
 morgan.token("body", (req) => JSON.stringify(req.body));
 app.use(morgan(":method :url :status :body - :response-time ms"));
 
@@ -46,7 +51,18 @@ app.get(`${routePrefix}/api/hello`, (req, res) => {
 });
 
 app.get(`${routePrefix}/persons`, (req, res) => {
-  res.json(phonebook);
+  // res.json(phonebook);
+
+  // Use the mongo model to find all persons
+  Person.find({})
+    .then((persons) => {
+      // Convert the persons to a JSON object
+      res.json(persons.map((person) => person.toJSON()));
+    })
+    .catch((error) => {
+      console.error("Error fetching persons:", error);
+      res.status(500).send("Internal Server Error");
+    });
 });
 
 app.get(`${routePrefix}/info`, (req, res) => {
@@ -66,12 +82,24 @@ app.get(`${routePrefix}/info`, (req, res) => {
  */
 app.get(`${routePrefix}/persons/:id`, (req, res) => {
   const id = req.params.id;
-  const person = phonebook.find((person) => person.id === id);
-  if (!person) {
-    return res.status(404).send("Person not found");
-  } else {
-    res.status(200).json(person);
-  }
+  // const person = phonebook.find((person) => person.id === id);
+  // if (!person) {
+  //   return res.status(404).send("Person not found");
+  // } else {
+  //   res.status(200).json(person);
+  // }
+
+  Person.findById(id)
+    .then((person) => {
+      if (!person) {
+        return res.status(404).send("Person not found");
+      }
+      res.status(200).json(person.toJSON());
+    })
+    .catch((error) => {
+      console.error("Error fetching person:", error);
+      res.status(500).send("Internal Server Error");
+    });
 });
 
 /**
@@ -83,8 +111,18 @@ app.delete(`${routePrefix}/persons/:id`, (req, res) => {
   // Get the id from the params
   const id = req.params.id;
 
-  // Remove the item from the "database"
-  phonebook = phonebook.filter((person) => person.id !== id);
+  Person.findByIdAndDelete(id)
+    .then((result) => {
+      if (!result) {
+        return res.status(404).send("Person not found");
+      }
+      console.log(`Deleted person with id: ${id}`);
+      return res.status(204).end();
+    })
+    .catch((error) => {
+      console.error("Error deleting person:", error);
+      return res.status(500).send("Internal Server Error");
+    });
 
   // Send status, and end connection
   res.status(204).end();
@@ -109,33 +147,37 @@ app.post(`${routePrefix}/persons`, (req, res) => {
 
   // If the number is missing
   if (!number) {
+    // send status 403 forbidden
     return res.status(403).json({ msg: "Number is missing" });
   }
 
-  // Check for duplicates
-  const nova = phonebook.find(
-    (person) => person.name.toLowerCase() === name.toLowerCase()
-  );
-
-  console.log("nova: ", nova);
-  if (nova) {
-    // console.log("nova: ", nova);
-    return res.status(409).json({ msg: "Name must be unique" });
+  // If the name is missing
+  if (!name) {
+    // send status 403 forbidden
+    return res.status(403).json({ msg: "Name is missing" });
   }
 
-  // Create "random" id
-  const id = generateId();
-
-  // Log what is being inputted
-  console.log({ id: id.toString(), name: name, number: number });
-
-  // Add the person to the phonebook
-  phonebook = [...phonebook, { id: id, name: name, number: number }];
-
-  // Send a message to the person that the new user has been added to the database
-  return res
-    .status(200)
-    .json({ person: { id: id, name: name, number: number } });
+  // Create a new document
+  const newPerson = new Person({
+    name: name,
+    number: number,
+  });
+  // Save the new person to the database
+  Person
+    .exists({ name: name })
+    .then((exists) => {
+      if (exists) {
+        return res.status(409).json({ msg: "Name must be unique" });
+      }
+      return newPerson.save();
+    })
+    .then(() => {
+      console.log(`Added ${name} number ${number} to phonebook`);
+    })
+    .catch((error) => {
+      console.error("Error saving person:", error);
+      return res.status(500).send("Something went wrong while saving the person");
+    });
 });
 
 // Listen for traffic
