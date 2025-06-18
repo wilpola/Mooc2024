@@ -5,6 +5,10 @@ const PORT = process.env.PORT | 3001;
 
 const routePrefix = process.env.NODE_ENV === 'production' ? "/api/v1" : "/api";
 
+// 3.13
+// Import mongo model
+const Person = require("./models/person"); 
+
 // allow cors
 const cors = require("cors");
 app.use(cors());
@@ -46,7 +50,18 @@ app.get(`${routePrefix}/api/hello`, (req, res) => {
 });
 
 app.get(`${routePrefix}/persons`, (req, res) => {
-  res.json(phonebook);
+  // res.json(phonebook);
+
+  // Use the mongo model to find all persons
+  Person.find({})
+    .then((persons) => {
+      // Convert the persons to a JSON object
+      res.json(persons.map((person) => person.toJSON()));
+    })
+    .catch((error) => {
+      console.error("Error fetching persons:", error);
+      res.status(500).send("Internal Server Error");
+    });
 });
 
 app.get(`${routePrefix}/info`, (req, res) => {
