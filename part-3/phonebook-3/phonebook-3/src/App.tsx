@@ -9,7 +9,6 @@ import { useState, useEffect } from "react";
 // import service hooks
 import phonebookProvider from "./services/people";
 import { Form, PhoneBook } from "./components";
-import { Toaster } from "@/components/ui/sonner"
 
 // Types
 export interface IPeople {
@@ -42,7 +41,6 @@ function App() {
 
   return (
     <>
-    <Toaster />
       <div className="m-10 max-w-screen-md mx-auto"></div>
 
       <div className="mx-auto max-w-screen-md m-10 w-[95%]">
