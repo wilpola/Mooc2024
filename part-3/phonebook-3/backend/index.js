@@ -1,7 +1,9 @@
 // Main backend file
 const express = require("express");
 const app = express();
-const PORT = 3001;
+const PORT = process.env.PORT | 3001;
+
+const routePrefix = process.env.NODE_ENV === 'production' ? "/api/v1" : "/api";
 
 // allow cors
 const cors = require("cors");
@@ -39,15 +41,15 @@ let phonebook = [
   },
 ];
 
-app.get("/api/hello", (req, res) => {
+app.get(`${routePrefix}/api/hello`, (req, res) => {
   res.send("<h1>Hello World!</h1>");
 });
 
-app.get("/api/persons", (req, res) => {
+app.get(`${routePrefix}/persons`, (req, res) => {
   res.json(phonebook);
 });
 
-app.get("/info", (req, res) => {
+app.get(`${routePrefix}/info`, (req, res) => {
   let date = new Date();
   res.send(
     `<div> 
@@ -62,7 +64,7 @@ app.get("/info", (req, res) => {
  *
  * @return Completes 3.3
  */
-app.get("/api/persons/:id", (req, res) => {
+app.get(`${routePrefix}/persons/:id`, (req, res) => {
   const id = req.params.id;
   const person = phonebook.find((person) => person.id === id);
   if (!person) {
@@ -77,7 +79,7 @@ app.get("/api/persons/:id", (req, res) => {
  *
  * @returns Completes 3.4
  */
-app.delete("/api/persons/:id", (req, res) => {
+app.delete(`${routePrefix}/persons/:id`, (req, res) => {
   // Get the id from the params
   const id = req.params.id;
 
@@ -102,7 +104,7 @@ const generateId = () => {
  * @return Completes 3.5 & 3.6
  * @Note This data only persists for as long as the server hasn't been restarted
  */
-app.post("/api/persons", (req, res) => {
+app.post(`${routePrefix}/persons`, (req, res) => {
   const { name, number } = req.body;
 
   // If the number is missing
