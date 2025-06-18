@@ -1,5 +1,5 @@
 import axios from "axios";
-const baseUrl = "http://localhost:3001/api";
+const baseUrl = import.meta.env.VITE_API_URI || "http://localhost:3001/api";
 const idURL = "http://localhost:3001/nextId";
 
 // import types
