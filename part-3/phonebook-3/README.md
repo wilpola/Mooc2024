@@ -68,7 +68,7 @@ Deleting a person utilizes the persons id
 @params: id <string | number>
 
 ```tsx
-// Delete request
+// Delete Request
 const id: <string | number> = person.id;
 const path = `api/v1/persons/${id}
 ```
