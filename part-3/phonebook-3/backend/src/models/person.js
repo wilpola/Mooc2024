@@ -11,11 +11,11 @@ if (!process.env.MONGO_URI) {
 
 const url = process.env.MONGO_URI;
 
-console.log("connecting to", url);
+console.log("Connecting to\n\n" + "\x1b[36m" + url + "\x1b[0m\n");
 mongoose
   .connect(url)
   .then((result) => {
-    console.log("connected to MongoDB");
+    console.log("Connected to MongoDB");
   })
   .catch((error) => {
     console.log("error connecting to MongoDB:", error.message);
