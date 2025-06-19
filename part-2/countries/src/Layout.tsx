@@ -25,7 +25,7 @@ const Layout: React.FC = () => {
           </div>
         </div>
       </header>
-      <main className="h-[calc(100vh-56px)]">
+      <main className="h-[calc(100vh-56px)] overflow-y-scroll">
         <Outlet />
       </main>
     </div>
