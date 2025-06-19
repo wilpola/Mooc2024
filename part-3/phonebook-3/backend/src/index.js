@@ -5,6 +5,9 @@ const PORT = process.env.PORT | 3001;
 
 const routePrefix = process.env.NODE_ENV === "production" ? "/api/v1" : "/api";
 
+// Import Middlewares
+const errorHandler = require("./middlewares/ErrorHandler");
+
 // 3.13
 // Import mongo model
 const Person = require("./models/person");
@@ -169,7 +172,8 @@ app.post(`${routePrefix}/persons`, (req, res) => {
       if (exists) {
         return res.status(409).json({ msg: "Name must be unique" });
       }
-      return newPerson.save();
+      newPerson.save();
+      return res.status(201).json(newPerson.toJSON()); 
     })
     .then(() => {
       console.log(`Added ${name} number ${number} to phonebook`);
@@ -179,6 +183,8 @@ app.post(`${routePrefix}/persons`, (req, res) => {
       return res.status(500).send("Something went wrong while saving the person");
     });
 });
+
+app.use(errorHandler);
 
 // Listen for traffic
 app.listen(PORT, () => {
