@@ -10,6 +10,7 @@ import type { ICountry } from "./CountryTypes";
 
 import { CountryTable } from "./CountryTable";
 import { Button } from "@/components/ui/button";
+import { CountryList } from "./CountryList";
 
 const Home: React.FC = () => {
   const [loading, setLoading] = useState(true);
@@ -86,33 +87,13 @@ const Home: React.FC = () => {
           </TabsList>
         </div>
         <TabsContent value="list">
-          <div className="flex flex-col gap-1 mb-5">
-            {visible.map((country) => (
-              <div
-                className="border p-2 rounded grid grid-cols-[60px_auto] gap-2"
-                key={country.cca3}
-                onClick={() => setSearchQuery(country.name.common)}
-              >
-                <div className="object-fill self-center">
-                  <Suspense>
-                    <img
-                      src={country.flags.svg}
-                      alt={`${country.name.common} flag`}
-                      className="h-auto w-full max-w-[320px] rounded-md"
-                    />
-                  </Suspense>
-                </div>
-                <div className="">
-                  <h3 className="font-semibold text-sm">
-                    {country.name.common}
-                  </h3>
-                  <p className="text-sm text-gray-500">
-                    {country.name.official}
-                  </p>
-                </div>
-              </div>
-            ))}
-          </div>
+          <CountryList
+            searchQuery={searchQuery}
+            setSearchQuery={setSearchQuery}
+            setVisible={setVisible}
+            visible={visible}
+            loading={loading}
+          />
         </TabsContent>
         <TabsContent value="table">
           <CountryTable

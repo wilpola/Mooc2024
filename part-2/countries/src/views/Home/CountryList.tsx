@@ -1,4 +1,4 @@
-import React from "react";
+import React, { Suspense } from "react";
 import {
   Table,
   TableBody,
@@ -12,7 +12,7 @@ import { Button } from "@/components/ui/button";
 import type { ICountry } from "./CountryTypes";
 import { DisplayCountry } from "./DisplayCountry";
 
-export const CountryTable: React.FC<{
+export const CountryList: React.FC<{
   searchQuery: string;
   setSearchQuery: (query: string) => void;
   setVisible: (countries: ICountry[]) => void;
@@ -28,39 +28,29 @@ export const CountryTable: React.FC<{
     });
 
     return (
-      <Table className="w-full">
-        <TableHeader>
-          <TableRow>
-            <TableHead>Flag</TableHead>
-            <TableHead>Country</TableHead>
-            <TableHead>Region</TableHead>
-            <TableHead>Population</TableHead>
-            <TableHead className="max-w-[50px]">Actions</TableHead>
-          </TableRow>
-        </TableHeader>
-        <TableBody>
-          {visible.map((country) => (
-            <TableRow key={country.cca3}>
-              <TableCell>{country.flag}</TableCell>
-              <TableCell>{country.name.common}</TableCell>
-              <TableCell>{country.region}</TableCell>
-              <TableCell>{country.population.toLocaleString()}</TableCell>
-              <TableCell className="max-w-[70px]">
-                <Button
-                  variant="outline"
-                  className="w-full max-w-[60px]"
-                  size={"sm"}
-                  disabled={loading}
-                  aria-label={`Show details for ${country.name.common}`}
-                  onClick={() => setSearchQuery(country.name.common)}
-                >
-                  Show
-                </Button>
-              </TableCell>
-            </TableRow>
-          ))}
-        </TableBody>
-      </Table>
+      <div className="flex flex-col gap-1 mb-5">
+        {visible.map((country) => (
+          <div
+            className="border p-2 rounded grid grid-cols-[60px_auto] gap-2 hover:cursor-pointer hover:bg-neutral-200"
+            key={country.cca3}
+            onClick={() => setSearchQuery(country.name.common)}
+          >
+            <div className="object-fill self-center">
+              <Suspense>
+                <img
+                  src={country.flags.svg}
+                  alt={`${country.name.common} flag`}
+                  className="h-auto w-full max-w-[320px] rounded-md"
+                />
+              </Suspense>
+            </div>
+            <div className="">
+              <h3 className="font-semibold text-sm">{country.name.common}</h3>
+              <p className="text-sm text-gray-500">{country.name.official}</p>
+            </div>
+          </div>
+        ))}
+      </div>
     );
   } else if (visible.length === 1) {
     return <DisplayCountry country={visible[0]} />;
