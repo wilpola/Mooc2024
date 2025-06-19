@@ -11,6 +11,7 @@ import type { ICountry } from "./CountryTypes";
 import { CountryTable } from "./CountryTable";
 import { Button } from "@/components/ui/button";
 import { CountryList } from "./CountryList";
+import { CountryGrid } from "./CountryGrid";
 
 const Home: React.FC = () => {
   const [loading, setLoading] = useState(true);
@@ -88,6 +89,15 @@ const Home: React.FC = () => {
         </div>
         <TabsContent value="list">
           <CountryList
+            searchQuery={searchQuery}
+            setSearchQuery={setSearchQuery}
+            setVisible={setVisible}
+            visible={visible}
+            loading={loading}
+          />
+        </TabsContent>
+        <TabsContent value="grid">
+          <CountryGrid
             searchQuery={searchQuery}
             setSearchQuery={setSearchQuery}
             setVisible={setVisible}
