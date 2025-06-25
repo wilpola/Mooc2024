@@ -4,7 +4,7 @@ import { Routes, Route } from "react-router-dom";
 import Layout from "./Layout";
 
 // import views
-import { Home } from "./views";
+import { About, Home } from "./views";
 
 const App: React.FC = () => {
   return (
@@ -12,7 +12,7 @@ const App: React.FC = () => {
       <Routes>
         <Route element={<Layout />}>
           <Route path="/" element={<Home />} />
-          {/* Add more routes here as needed */}
+          <Route path="/about" element={<About />} />
         </Route>
       </Routes>
     </>

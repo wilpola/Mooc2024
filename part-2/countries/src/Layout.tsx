@@ -1,7 +1,9 @@
 import React from "react";
 import { Outlet } from "react-router-dom";
+import { NavLink as Link } from "react-router-dom";
 
 import { Button } from "@/components/ui/button";
+import { Github } from "lucide-react";
 
 const Layout: React.FC = () => {
   return (
@@ -9,18 +11,27 @@ const Layout: React.FC = () => {
       <header className="h-14 bg-neutral-800 text-white ">
         <div className="max-w-screen-lg mx-auto w-[95%] flex items-center justify-between h-full">
           <h1 className="text-2xl font-semibold">Countries</h1>
-          <div className="">
+          <div className="flex items-center">
             <Button
               variant="ghost"
               className=" hover:bg-neutral-700 text-white hover:text-white"
+              asChild
             >
-              Home
+              <Link to="/">Home</Link>
             </Button>
             <Button
               variant="ghost"
               className=" hover:bg-neutral-700 text-white hover:text-white"
+              asChild
             >
-              About
+              <Link to="/about">About</Link>
+            </Button>
+            <Button
+              variant="ghost"
+              className=" hover:bg-neutral-700 text-white hover:text-white"
+              size={"icon"}
+            >
+              <Github />
             </Button>
           </div>
         </div>
