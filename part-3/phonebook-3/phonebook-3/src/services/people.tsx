@@ -24,7 +24,7 @@ const update = (id: string, newObject: IPeople) => {
   return axios.put(`${baseUrl}/persons/${id}`, newObject);
 };
 
-const remove = (id: number) => {
+const remove = (id: string) => {
   return axios.delete(`${baseUrl}/persons/${id}`);
 };
 
