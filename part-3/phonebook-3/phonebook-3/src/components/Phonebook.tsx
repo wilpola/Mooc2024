@@ -24,11 +24,7 @@ import {
 import { toast } from "sonner";
 import { Input } from "@/components/ui/input";
 
-interface IPeople {
-  id: string;
-  name: string;
-  number?: string;
-}
+import type { IPeople } from "@/App";
 
 export const PhoneBook = ({
   people,
@@ -158,7 +154,7 @@ export const PhoneBook = ({
                               className="bg-red-500 text-white hover:bg-red-600"
                               onClick={(e) => {
                                 e.stopPropagation();
-                                
+
                                 // Remove the person from the phonebook
                                 peopleProvider.remove(i.id).then(() => {
                                   setPhoneBook(
