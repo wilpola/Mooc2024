@@ -165,6 +165,7 @@ app.post(`${routePrefix}/persons`, (req, res) => {
     name: name,
     number: number,
   });
+
   // Save the new person to the database
   Person
     .exists({ name: name })
@@ -182,6 +183,29 @@ app.post(`${routePrefix}/persons`, (req, res) => {
       console.error("Error saving person:", error);
       return res.status(500).send("Something went wrong while saving the person");
     });
+});
+
+app.put(`${routePrefix}/persons/:id`, (req, res) => {
+  const id = req.params.id;
+  const { name, number } = req.body;
+
+  // update the person with the given id
+  Person.findByIdAndUpdate(
+    id,
+    { name: name, number: number },
+    { new: true}
+  )
+    .then((updatedPerson) => {
+      if (!updatedPerson) {
+        return res.status(404).send("Person not found");
+      }
+      res.status(200).json(updatedPerson.toJSON());
+    })
+    .catch((error) => {
+      console.error("Error updating person:", error);
+      res.status(500).send("Something went wrong!");
+    });
+
 });
 
 app.use(errorHandler);

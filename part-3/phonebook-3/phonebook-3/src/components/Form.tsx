@@ -23,47 +23,105 @@ export const Form = ({ newPerson, setNewPerson, people, setPeople }: any) => {
      */
     // dont submit empty data
     if (newPerson.name !== "" && newPerson.name !== " ") {
-      peopleProvider
-        .create(newPerson)
-        .then((res) => {
-          setPeople(people.concat(res.data));
+      const isDuplicate = people.some(
+        (person: { name: string }) =>
+          person.name.toLowerCase() === newPerson.name.toLowerCase()
+      );
 
-          setNewPerson({ name: "", number: "" });
-          toast(
-            <div className="w-full">
-              <h2 className="text-base font-semibold">
-                Person added to the phonebook
-              </h2>
-              <p className="text-xs text-slate-500">ID: {res.data.id}</p>
-              <div className="bg-neutral-800 rounded-md p-2 mt-2 text-white w-full">
-                <code className="font-normal">
-                  Name: {res.data.name} <br />
-                  Phone: {res.data.number}
-                </code>
-              </div>
-            </div>,
-            {
-              duration: 3000,
-              icon: "👍",
-              position: "bottom-right",
-            }
-          );
-        })
-        .catch((err) => {
-          if (err.response.status === 403) {
-            toast.error("Please fill all the fields correctly.", {
-              position: "top-center",
-              richColors: true,
-            });
-          } else if (err.response.status === 409) {
-            toast.error("This person is already in the phonebook.", {
-              position: "top-center",
-              richColors: true,
-            });
-          } else {
-            console.log(err);
-          }
+      if (isDuplicate) {
+        const x = people.filter((person: { name: string }) => {
+          return person.name.toLowerCase() === newPerson.name.toLowerCase();
         });
+
+        peopleProvider
+          .update(x[0].id, newPerson)
+          .then((res) => {
+            setPeople(
+              people.map((person: { id: string }) =>
+                person.id === x[0].id ? res.data : person
+              )
+            );
+            setNewPerson({ name: "", number: "" });
+            toast(
+              <div className="w-full">
+                <h2 className="text-base font-semibold">
+                  Person updated in the phonebook
+                </h2>
+                <p className="text-xs text-slate-500">ID: {res.data.id}</p>
+                <div className="bg-neutral-800 rounded-md p-2 mt-2 text-white w-full">
+                  <code className="font-normal">
+                    Name: {res.data.name} <br />
+                    Phone: {res.data.number}
+                  </code>
+                </div>
+              </div>,
+              {
+                duration: 3000,
+                icon: "👍",
+                position: "bottom-right",
+              }
+            );
+          })
+          .catch((err) => {
+            if (err.response.status === 403) {
+              toast.error("Please fill all the fields correctly.", {
+                position: "top-center",
+                richColors: true,
+              });
+            } else if (err.response.status === 404) {
+              toast.error("This person is not in the phonebook.", {
+                position: "top-center",
+                richColors: true,
+              });
+            } else {
+              console.log(err);
+            }
+          });
+
+        return;
+      } else {
+        peopleProvider
+          .create(newPerson)
+          .then((res) => {
+            setPeople(people.concat(res.data));
+
+            setNewPerson({ name: "", number: "" });
+            toast(
+              <div className="w-full">
+                <h2 className="text-base font-semibold">
+                  Person added to the phonebook
+                </h2>
+                <p className="text-xs text-slate-500">ID: {res.data.id}</p>
+                <div className="bg-neutral-800 rounded-md p-2 mt-2 text-white w-full">
+                  <code className="font-normal">
+                    Name: {res.data.name} <br />
+                    Phone: {res.data.number}
+                  </code>
+                </div>
+              </div>,
+              {
+                duration: 3000,
+                icon: "👍",
+                position: "bottom-right",
+              }
+            );
+          })
+          .catch((err) => {
+            if (err.response.status === 403) {
+              toast.error("Please fill all the fields correctly.", {
+                position: "top-center",
+                richColors: true,
+              });
+            } else if (err.response.status === 409) {
+              toast.error("This person is already in the phonebook.", {
+                position: "top-center",
+                richColors: true,
+              });
+            } else {
+              console.log(err);
+            }
+          });
+      }
     }
   };
 
