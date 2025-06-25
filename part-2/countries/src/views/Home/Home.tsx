@@ -1,6 +1,6 @@
 // This is where the actual app code resides.
 
-import React, { useState, useEffect, Suspense } from "react";
+import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Input } from "@/components/ui/input";
