@@ -8,11 +8,11 @@ import { Github } from "lucide-react";
 const About: React.FC = () => {
   return (
     <div className="w-full bg-neutral-900 h-[calc(100vh-56px)] overflow-y-scroll">
-      <div className="w-full mx-auto max-w-screen-xl rounded-md bg-neutral-900">
+      <div className="mx-auto max-w-screen-xl rounded-md bg-neutral-900 w-[95%]">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-5 min-h-[80svh] items-center ">
           <div className="mt-4 text-neutral-100">
             <h1 className="text-4xl font-semibold">About</h1>
-            <p className="text-lg mt-2 max-w-[55ch] mx-auto max-md:container">
+            <p className="text-lg mt-2 max-w-[55ch] max-md:container">
               Countries is a Part-2 assignment, where we were tasked to create
               an application where users can search for countries and view their
               details. The application is built using React, TypeScript, and
@@ -31,15 +31,15 @@ const About: React.FC = () => {
                 <Github /> Code
               </Button>
               <Button
-                variant={"default"}
-                className="bg-neutral-900"
+                variant={"link"}
+                className="bg-neutral-900 text-white"
                 onClick={() =>
                   window.open(
                     "https://fullstackopen.com/en/part2/adding_styles_to_react_app#exercises-2-18-2-20"
                   )
                 }
               >
-                Check assignment
+                Assignment Details
               </Button>
             </div>
           </div>

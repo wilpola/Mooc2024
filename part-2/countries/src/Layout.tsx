@@ -30,6 +30,11 @@ const Layout: React.FC = () => {
               variant="ghost"
               className=" hover:bg-neutral-700 text-white hover:text-white"
               size={"icon"}
+              onClick={() =>
+                  window.open(
+                    "https://github.com/wilpola/Mooc2024/tree/main/part-2"
+                  )
+                }
             >
               <Github />
             </Button>
