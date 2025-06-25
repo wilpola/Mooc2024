@@ -1,74 +1,50 @@
-# Part-3 | Phonebook
+# React + TypeScript + Vite
 
-This fullstack application has been developed following the instructions / requirements detailed in the Fullstack open courses' part-3 exercises.
+This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
 
-## Backend
+Currently, two official plugins are available:
 
-- You can access the backend: [here](https://mooc.wilpola.com/api/v1)
-- Please read the below to get a more detailed view of how to use the api.
-- The api uses a routePrefix `/api/v1` to use good naming practices.
+- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
+- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
 
-### 1. Getting info
+## Expanding the ESLint configuration
 
-As detailed in exercise 3.2, the server must be able to provide details on the number of people that are stored in the phonebook, and the current time of the request sent to the server.
+If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
 
-This route can be accessed from the following path:
-
-```js
-// GET Request
-const path = "/api/v1/info";
-```
-
-### 2. Retrieving the entire phonebook
-
-When you request the entire phonebook, the server will respond either with a status of 200 or 304 depending on your cached version of the data. These are successfull requests
+- Configure the top-level `parserOptions` property like this:
 
 ```js
-// GET Request
-const path = "/api/v1/persons";
+export default tseslint.config({
+  languageOptions: {
+    // other options...
+    parserOptions: {
+      project: ['./tsconfig.node.json', './tsconfig.app.json'],
+      tsconfigRootDir: import.meta.dirname,
+    },
+  },
+})
 ```
 
-### 3. Get one person
+- Replace `tseslint.configs.recommended` to `tseslint.configs.recommendedTypeChecked` or `tseslint.configs.strictTypeChecked`
+- Optionally add `...tseslint.configs.stylisticTypeChecked`
+- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and update the config:
 
-You are able to request a single person from the database.
+```js
+// eslint.config.js
+import react from 'eslint-plugin-react'
 
-@params: id <string | number>
-
-```tsx
-// GET Request
-const id: <string | number> = person.id;
-const path = `/api/v1/persons/${id}`;
-```
-
-### 4. Creating a person
-
-A person can be added to the phone book with a simple POST Request.
-
-```tsx
-// POST Request
-/**
- * @params name: <string> Required
- * @params number: <string | number> Required
- * @returns {"id": <string>, "name": <string>, "number": <string>}
- */
-
-interface IPeople {
-  id: string | null;
-  name: string;
-  number: string | number;
-}
-
-const path = "/api/v1/person";
-```
-
-### 5. Delete Specific person
-
-Deleting a person utilizes the persons id
-
-@params: id <string | number>
-
-```tsx
-// Delete Request
-const id: <string | number> = person.id;
-const path = `api/v1/persons/${id}
+export default tseslint.config({
+  // Set the react version
+  settings: { react: { version: '18.3' } },
+  plugins: {
+    // Add the react plugin
+    react,
+  },
+  rules: {
+    // other rules...
+    // Enable its recommended rules
+    ...react.configs.recommended.rules,
+    ...react.configs['jsx-runtime'].rules,
+  },
+})
 ```
