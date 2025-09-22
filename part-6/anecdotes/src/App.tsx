@@ -8,7 +8,7 @@ import {
   DialogTitle,
   DialogDescription,
 } from "@/components/ui/dialog";
-import { CirclePlus } from "lucide-react";
+import { CirclePlus, GitCompareArrows } from "lucide-react";
 import { useDispatch, useSelector } from "react-redux";
 import { Textarea } from "./components/ui/textarea";
 import { motion, Reorder } from "motion/react";
@@ -26,58 +26,25 @@ function App() {
         <h1 className="text-2xl font-semibold">Anecdotes</h1>
 
         {/* Add New Anecdote Form */}
-        <Dialog>
-          <DialogTrigger asChild>
-            <Button className="hover:cursor-pointer">
-              <CirclePlus className="mr-2" />
-              Add new
-            </Button>
-          </DialogTrigger>
-
-          <DialogContent className="sm:max-w-[425px]">
-            <DialogTitle>Add new anecdote</DialogTitle>
-            <DialogDescription>
-              Create a new anecdote to share with others.
-            </DialogDescription>
-            <form
-              onSubmit={(e) => {
-                e.preventDefault();
-                const content = (e.target as HTMLFormElement).anecdote.value;
-                dispatch({
-                  type: "anecdotes/createAnecdote",
-                  payload: content,
-                });
-                (e.target as HTMLFormElement).anecdote.value = "";
-              }}
-            >
-              <div className="grid gap-4 pb-2">
-                <div className="grid gap-2">
-                  <Textarea
-                    name="anecdote"
-                    id="anecdote"
-                    placeholder="Write your anecdote here..."
-                    autoFocus
-                    className="w-full px-3 py-0 border rounded-md"
-                  />
-                </div>
-              </div>
-              <div className="flex justify-end space-x-2">
-                <DialogClose asChild>
-                  <Button type="button" variant="outline">
-                    Cancel
-                  </Button>
-                </DialogClose>
-                <DialogClose asChild>
-                  <Button type="submit">Add</Button>
-                </DialogClose>
-              </div>
-            </form>
-          </DialogContent>
-        </Dialog>
+        <div className="flex items-center gap-2">
+          <Button
+            onClick={() => dispatch({ type: "anecdotes/resetInitialState" })}
+            variant="outline"
+            className="text-sm hover:cursor-pointer"
+          >
+            <GitCompareArrows className="mr-2" />
+            Reset
+          </Button>
+          <AnecdoteForm variant="default" />
+        </div>
       </div>
       <div className="text-muted-foreground">
-        <p className="text-muted-foreground">/ˈanɪkdəʊt/ - <span className="font-semibold">noun</span></p>
-        <p className="text-slate-400 font-medium">a short amusing or interesting story about a real incident or person.</p>
+        <p className="text-muted-foreground">
+          /ˈanɪkdəʊt/ - <span className="font-semibold">noun</span>
+        </p>
+        <p className="text-slate-400 font-medium">
+          a short amusing or interesting story about a real incident or person.
+        </p>
       </div>
 
       {/* Map Anecdotes */}
@@ -115,53 +82,64 @@ function App() {
         </Reorder.Group>
       </motion.div>
 
-      {/* Add New Anecdote Form */}
-      <Dialog>
-        <DialogTrigger asChild>
-          <Button className="hover:cursor-pointer" variant={"outline"}>
-            <CirclePlus className="mr-2" />
-            Add new
-          </Button>
-        </DialogTrigger>
-
-        <DialogContent className="sm:max-w-[425px]">
-          <DialogTitle>Add new anecdote</DialogTitle>
-          <DialogDescription>
-            Create a new anecdote to share with others.
-          </DialogDescription>
-          <form
-            onSubmit={(e) => {
-              e.preventDefault();
-              const content = (e.target as HTMLFormElement).anecdote.value;
-              dispatch({ type: "anecdotes/createAnecdote", payload: content });
-              (e.target as HTMLFormElement).anecdote.value = "";
-            }}
-          >
-            <div className="grid gap-4 pb-2">
-              <div className="grid gap-2">
-                <Textarea
-                  name="anecdote"
-                  id="anecdote"
-                  placeholder="Write your anecdote here..."
-                  autoFocus
-                  className="w-full px-3 py-0 border rounded-md"
-                />
-              </div>
-            </div>
-            <div className="flex justify-end space-x-2">
-              <DialogClose asChild>
-                <Button type="button" variant="outline">
-                  Cancel
-                </Button>
-              </DialogClose>
-              <DialogClose asChild>
-                <Button type="submit">Add</Button>
-              </DialogClose>
-            </div>
-          </form>
-        </DialogContent>
-      </Dialog>
+      <AnecdoteForm variant="outline" />
     </div>
+  );
+}
+
+interface AnecdoteFormProps {
+  variant?: "outline" | "default";
+}
+
+export function AnecdoteForm({ variant }: AnecdoteFormProps) {
+  const dispatch = useDispatch();
+  return (
+    // {/* Add New Anecdote Form */}
+    <Dialog>
+      <DialogTrigger asChild>
+        <Button className="hover:cursor-pointer" variant={variant}>
+          <CirclePlus className="mr-2" />
+          Add new
+        </Button>
+      </DialogTrigger>
+
+      <DialogContent className="sm:max-w-[425px]">
+        <DialogTitle>Add new anecdote</DialogTitle>
+        <DialogDescription>
+          Create a new anecdote to share with others.
+        </DialogDescription>
+        <form
+          onSubmit={(e) => {
+            e.preventDefault();
+            const content = (e.target as HTMLFormElement).anecdote.value;
+            dispatch({ type: "anecdotes/createAnecdote", payload: content });
+            (e.target as HTMLFormElement).anecdote.value = "";
+          }}
+        >
+          <div className="grid gap-4 pb-2">
+            <div className="grid gap-2">
+              <Textarea
+                name="anecdote"
+                id="anecdote"
+                placeholder="Write your anecdote here..."
+                autoFocus
+                className="w-full px-3 py-0 border rounded-md"
+              />
+            </div>
+          </div>
+          <div className="flex justify-end space-x-2">
+            <DialogClose asChild>
+              <Button type="button" variant="outline">
+                Cancel
+              </Button>
+            </DialogClose>
+            <DialogClose asChild>
+              <Button type="submit">Add</Button>
+            </DialogClose>
+          </div>
+        </form>
+      </DialogContent>
+    </Dialog>
   );
 }
 

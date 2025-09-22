@@ -42,9 +42,12 @@ const anecdoteSlice = createSlice({
     createAnecdote: (state, action) => {
       const content = action.payload;
       state.push(asObject(content));
+    },
+    resetInitialState: () => {
+        return initialState;
     }
   },
 });
 
-export const { vote, createAnecdote } = anecdoteSlice.actions;
+export const { vote, createAnecdote, resetInitialState } = anecdoteSlice.actions;
 export default anecdoteSlice.reducer;
