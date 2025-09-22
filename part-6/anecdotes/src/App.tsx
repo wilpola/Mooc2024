@@ -8,6 +8,7 @@ import {
   DialogTitle,
   DialogDescription,
 } from "@/components/ui/dialog";
+import { CirclePlus } from "lucide-react";
 import { useDispatch, useSelector } from "react-redux";
 import { Textarea } from "./components/ui/textarea";
 import { motion, Reorder } from "motion/react";
@@ -20,8 +21,64 @@ function App() {
   );
 
   return (
-    <div className="w-[95%] max-w-screen-md mx-auto py-10 transition-all duration-300 ease-in-out">
-      <h1 className="text-2xl font-semibold">Anecdotes</h1>
+    <div className="w-[95%] h-screen max-w-screen-md mx-auto py-10 transition-all duration-300 ease-in-out">
+      <div className="flex items-center justify-between">
+        <h1 className="text-2xl font-semibold">Anecdotes</h1>
+
+        {/* Add New Anecdote Form */}
+        <Dialog>
+          <DialogTrigger asChild>
+            <Button className="hover:cursor-pointer">
+              <CirclePlus className="mr-2" />
+              Add new
+            </Button>
+          </DialogTrigger>
+
+          <DialogContent className="sm:max-w-[425px]">
+            <DialogTitle>Add new anecdote</DialogTitle>
+            <DialogDescription>
+              Create a new anecdote to share with others.
+            </DialogDescription>
+            <form
+              onSubmit={(e) => {
+                e.preventDefault();
+                const content = (e.target as HTMLFormElement).anecdote.value;
+                dispatch({
+                  type: "anecdotes/createAnecdote",
+                  payload: content,
+                });
+                (e.target as HTMLFormElement).anecdote.value = "";
+              }}
+            >
+              <div className="grid gap-4 pb-2">
+                <div className="grid gap-2">
+                  <Textarea
+                    name="anecdote"
+                    id="anecdote"
+                    placeholder="Write your anecdote here..."
+                    autoFocus
+                    className="w-full px-3 py-0 border rounded-md"
+                  />
+                </div>
+              </div>
+              <div className="flex justify-end space-x-2">
+                <DialogClose asChild>
+                  <Button type="button" variant="outline">
+                    Cancel
+                  </Button>
+                </DialogClose>
+                <DialogClose asChild>
+                  <Button type="submit">Add</Button>
+                </DialogClose>
+              </div>
+            </form>
+          </DialogContent>
+        </Dialog>
+      </div>
+      <div className="text-muted-foreground">
+        <p className="text-muted-foreground">/ˈanɪkdəʊt/ - <span className="font-semibold">noun</span></p>
+        <p className="text-slate-400 font-medium">a short amusing or interesting story about a real incident or person.</p>
+      </div>
 
       {/* Map Anecdotes */}
       <motion.div
@@ -34,10 +91,10 @@ function App() {
             .sort((a, b) => b.votes - a.votes)
             .map((anecdote) => (
               <Reorder.Item key={anecdote.id} value={anecdote}>
-                <div className="my-4 p-4 border rounded-md">
+                <div className="my-4 p-4 border rounded-md grid grid-cols-[1fr_80px] gap-4">
                   <div>{anecdote.content}</div>
-                  <div>
-                    has {anecdote.votes}
+                  <div className="flex flex-col items-center">
+                    <span className="font-semibold">{anecdote.votes}</span>{" "}
                     <Button
                       variant={"outline"}
                       size={"sm"}
@@ -61,7 +118,10 @@ function App() {
       {/* Add New Anecdote Form */}
       <Dialog>
         <DialogTrigger asChild>
-          <Button>Add new</Button>
+          <Button className="hover:cursor-pointer" variant={"outline"}>
+            <CirclePlus className="mr-2" />
+            Add new
+          </Button>
         </DialogTrigger>
 
         <DialogContent className="sm:max-w-[425px]">
