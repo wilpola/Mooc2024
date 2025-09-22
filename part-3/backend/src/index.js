@@ -5,6 +5,9 @@ const PORT = process.env.PORT | 3001;
 
 const routePrefix = process.env.NODE_ENV === "production" ? "/api/v1" : "/api";
 
+// Import Middlewares
+const errorHandler = require("./middlewares/ErrorHandler");
+
 // 3.13
 // Import mongo model
 const Person = require("./models/person");
@@ -67,12 +70,22 @@ app.get(`${routePrefix}/persons`, (req, res) => {
 
 app.get(`${routePrefix}/info`, (req, res) => {
   let date = new Date();
-  res.send(
-    `<div> 
-        <p>Phonebook has info for ${phonebook.length} people</p> 
-        <p>${date}</p>
-    </div>`
-  );
+  let numOfPersons = 0;
+  Person.find({})
+    .then((persons) => {
+      numOfPersons = persons.length;
+      date = date.toString();
+      res.send(
+        `<div> 
+            <p>Phonebook has info for ${numOfPersons} people</p> 
+            <p>${date}</p>
+        </div>`
+      );
+    })
+    .catch((error) => {
+      console.error("An error occurred:", error);
+      res.status(500).send("Failed to retrieve information");
+    });
 });
 
 /**
@@ -162,23 +175,46 @@ app.post(`${routePrefix}/persons`, (req, res) => {
     name: name,
     number: number,
   });
+
   // Save the new person to the database
-  Person
-    .exists({ name: name })
+  Person.exists({ name: name })
     .then((exists) => {
       if (exists) {
         return res.status(409).json({ msg: "Name must be unique" });
       }
-      return newPerson.save();
+      newPerson.save();
+      return res.status(201).json(newPerson.toJSON());
     })
     .then(() => {
       console.log(`Added ${name} number ${number} to phonebook`);
     })
     .catch((error) => {
       console.error("Error saving person:", error);
-      return res.status(500).send("Something went wrong while saving the person");
+      return res
+        .status(500)
+        .send("Something went wrong while saving the person");
     });
 });
+
+app.put(`${routePrefix}/persons/:id`, (req, res) => {
+  const id = req.params.id;
+  const { name, number } = req.body;
+
+  // update the person with the given id
+  Person.findByIdAndUpdate(id, { name: name, number: number }, { new: true })
+    .then((updatedPerson) => {
+      if (!updatedPerson) {
+        return res.status(404).send("Person not found");
+      }
+      res.status(200).json(updatedPerson.toJSON());
+    })
+    .catch((error) => {
+      console.error("Error updating person:", error);
+      res.status(500).send("Something went wrong!");
+    });
+});
+
+app.use(errorHandler);
 
 // Listen for traffic
 app.listen(PORT, () => {
