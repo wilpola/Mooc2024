@@ -1,8 +1,13 @@
+import { Landing } from "./views";
+
+import { Routes, Route } from "react-router-dom";
 function App() {
   return (
     <>
-      <h1>Part 6 | Redux</h1>
-      <p>Welcome to Redux</p>
+      <Routes>
+        <Route path="/" element={<Landing />} />
+        <Route path="*" element={<div>404 Not Found</div>} />
+      </Routes>
     </>
   );
 }
