@@ -8,7 +8,7 @@ import { Github } from "lucide-react";
 const Layout: React.FC = () => {
   return (
     <>
-      <div className="w-full bg-gray-100 h-screen">
+      <div className="w-full bg-gray-100 h-svh text-neutral-900 overflow-y-overlay">
         <header className="h-14 bg-neutral-800 text-white ">
           <div className="max-w-screen-lg mx-auto w-[95%] flex items-center justify-between h-full">
             <h1 className="text-2xl font-semibold">Phonebook-v3</h1>
@@ -42,7 +42,7 @@ const Layout: React.FC = () => {
             </div>
           </div>
         </header>
-        <main className="h-[calc(100vh-56px)] overflow-y-scroll">
+        <main className="h-[calc(100svh-56px)] overflow-y-auto">
           <Outlet />
         </main>
       </div>
