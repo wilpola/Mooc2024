@@ -48,39 +48,7 @@ function App() {
       </div>
 
       {/* Map Anecdotes */}
-      <motion.div
-        layout
-        transition={{ type: "spring", stiffness: 300, duration: 0.5 }}
-        className="mt-6"
-      >
-        <Reorder.Group axis="y" values={anecdotes} onReorder={() => {}}>
-          {[...anecdotes]
-            .sort((a, b) => b.votes - a.votes)
-            .map((anecdote) => (
-              <Reorder.Item key={anecdote.id} value={anecdote}>
-                <div className="my-4 p-4 border rounded-md grid grid-cols-[1fr_80px] gap-4">
-                  <div>{anecdote.content}</div>
-                  <div className="flex flex-col items-center">
-                    <span className="font-semibold">{anecdote.votes}</span>{" "}
-                    <Button
-                      variant={"outline"}
-                      size={"sm"}
-                      className="hover:cursor-pointer"
-                      onClick={() =>
-                        dispatch({
-                          type: "anecdotes/vote",
-                          payload: anecdote.id,
-                        })
-                      }
-                    >
-                      vote
-                    </Button>
-                  </div>
-                </div>
-              </Reorder.Item>
-            ))}
-        </Reorder.Group>
-      </motion.div>
+      <AnecdoteList />
 
       <AnecdoteForm variant="outline" />
     </div>
@@ -140,6 +108,53 @@ export function AnecdoteForm({ variant }: AnecdoteFormProps) {
         </form>
       </DialogContent>
     </Dialog>
+  );
+}
+
+export function AnecdoteList() {
+  const dispatch = useDispatch();
+  const anecdotes = useSelector(
+    (state: { anecdotes: { content: string; id: string; votes: number }[] }) =>
+      state.anecdotes
+  );
+
+  return (
+    <>
+      {/* Map Anecdotes */}
+      <motion.div
+        layout
+        transition={{ type: "spring", stiffness: 300, duration: 0.5 }}
+        className="mt-6"
+      >
+        <Reorder.Group axis="y" values={anecdotes} onReorder={() => {}}>
+          {[...anecdotes]
+            .sort((a, b) => b.votes - a.votes)
+            .map((anecdote) => (
+              <Reorder.Item key={anecdote.id} value={anecdote}>
+                <div className="my-4 p-4 border rounded-md grid grid-cols-[1fr_80px] gap-4">
+                  <div>{anecdote.content}</div>
+                  <div className="flex flex-col items-center">
+                    <span className="font-semibold">{anecdote.votes}</span>{" "}
+                    <Button
+                      variant={"outline"}
+                      size={"sm"}
+                      className="hover:cursor-pointer"
+                      onClick={() =>
+                        dispatch({
+                          type: "anecdotes/vote",
+                          payload: anecdote.id,
+                        })
+                      }
+                    >
+                      vote
+                    </Button>
+                  </div>
+                </div>
+              </Reorder.Item>
+            ))}
+        </Reorder.Group>
+      </motion.div>
+    </>
   );
 }
 
