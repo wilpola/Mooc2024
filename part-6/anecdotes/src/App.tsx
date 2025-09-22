@@ -1,5 +1,4 @@
 // Main application logic
-import { useState } from "react";
 import { Button } from "./components/ui/button";
 import {
   Dialog,
@@ -10,8 +9,8 @@ import {
   DialogDescription,
 } from "@/components/ui/dialog";
 import { useDispatch, useSelector } from "react-redux";
-import { Input } from "./components/ui/input";
 import { Textarea } from "./components/ui/textarea";
+import { motion, Reorder } from "motion/react";
 
 function App() {
   const dispatch = useDispatch();
@@ -21,30 +20,43 @@ function App() {
   );
 
   return (
-    <div className="w-[95%] max-w-screen-md mx-auto py-10">
+    <div className="w-[95%] max-w-screen-md mx-auto py-10 transition-all duration-300 ease-in-out">
       <h1 className="text-2xl font-semibold">Anecdotes</h1>
 
       {/* Map Anecdotes */}
-      <div>
-        {anecdotes.map((anecdote) => (
-          <div key={anecdote.id} className="my-4 p-4 border rounded-md">
-            <div>{anecdote.content}</div>
-            <div>
-              has {anecdote.votes}
-              <Button
-                variant={"outline"}
-                size={"sm"}
-                className="hover:cursor-pointer"
-                onClick={() =>
-                  dispatch({ type: "anecdotes/vote", payload: anecdote.id })
-                }
-              >
-                vote
-              </Button>
-            </div>
-          </div>
-        ))}
-      </div>
+      <motion.div
+        layout
+        transition={{ type: "spring", stiffness: 300, duration: 0.5 }}
+        className="mt-6"
+      >
+        <Reorder.Group axis="y" values={anecdotes} onReorder={() => {}}>
+          {[...anecdotes]
+            .sort((a, b) => b.votes - a.votes)
+            .map((anecdote) => (
+              <Reorder.Item key={anecdote.id} value={anecdote}>
+                <div className="my-4 p-4 border rounded-md">
+                  <div>{anecdote.content}</div>
+                  <div>
+                    has {anecdote.votes}
+                    <Button
+                      variant={"outline"}
+                      size={"sm"}
+                      className="hover:cursor-pointer"
+                      onClick={() =>
+                        dispatch({
+                          type: "anecdotes/vote",
+                          payload: anecdote.id,
+                        })
+                      }
+                    >
+                      vote
+                    </Button>
+                  </div>
+                </div>
+              </Reorder.Item>
+            ))}
+        </Reorder.Group>
+      </motion.div>
 
       {/* Add New Anecdote Form */}
       <Dialog>
@@ -52,9 +64,7 @@ function App() {
           <Button>Add new</Button>
         </DialogTrigger>
 
-        <DialogContent
-          className="sm:max-w-[425px]"
-        >
+        <DialogContent className="sm:max-w-[425px]">
           <DialogTitle>Add new anecdote</DialogTitle>
           <DialogDescription>
             Create a new anecdote to share with others.
