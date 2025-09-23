@@ -13,12 +13,13 @@ import { useDispatch, useSelector } from "react-redux";
 import { Textarea } from "./components/ui/textarea";
 import { motion, Reorder } from "motion/react";
 import Filter from "@/components/Filter";
+import type { AnecdoteProps } from "./reducers/anecdote-reducers";
 
 function App() {
   const dispatch = useDispatch();
 
   return (
-    <div className="w-[95%] min-h-screen max-w-screen-md mx-auto py-10 transition-all duration-300 ease-in-out overflow-x-clip">
+    <div className="w-[95%] min-h-screen max-w-screen-md mx-auto transition-all duration-300 ease-in-out py-10">
       <div className="flex items-center justify-between">
         <h1 className="text-2xl font-semibold">Anecdotes</h1>
 
@@ -111,15 +112,16 @@ export function AnecdoteForm({ variant }: AnecdoteFormProps) {
 
 export function AnecdoteList() {
   const dispatch = useDispatch();
-  const { anecdotes, filter } = useSelector(
-    (state: {
-      anecdotes: { content: string; id: string; votes: number }[];
-      filter: string;
-    }) => ({
-      anecdotes: state.anecdotes,
-      filter: state.filter,
-    })
-  );
+
+  const anecdotes = useSelector((state: {
+    anecdotes: { content: string; id: string; votes: number }[];
+    filter: string;
+  }) => state.anecdotes);
+
+  const filter = useSelector((state: {
+    anecdotes: AnecdoteProps[];
+    filter: string;
+  }) => state.filter);
 
   const filteredAnecdotes = filter
     ? anecdotes.filter((a) =>

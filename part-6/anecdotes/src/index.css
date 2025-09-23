@@ -8,6 +8,9 @@
   line-height: 1.5;
   font-weight: 400;
 
+  height: 100svh;
+  overflow-y: overlay;
+
   color-scheme: light dark;
   color: rgba(255, 255, 255, 0.87);
   background-color: #242424;
@@ -54,6 +57,7 @@ body {
   height: 100svh;
   width: 100svw;
   margin: 0;
+  overflow-y: overlay;
 }
 
 

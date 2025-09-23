@@ -20,7 +20,6 @@ export default function Filter() {
           value={useSelector((state: { filter: string }) => state.filter)}
           onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
             e.preventDefault();
-            dispatch({ type: "SET_FILTER", payload: e.target.value });
             dispatch(setFilter(e.target.value));
           }}
         />
