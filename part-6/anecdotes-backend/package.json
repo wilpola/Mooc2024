@@ -1,6 +1,6 @@
 {
   "name": "anecdotes-backend",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Backend server for the anecdotes app",
   "main": "dist/index.js",
   "scripts": {
