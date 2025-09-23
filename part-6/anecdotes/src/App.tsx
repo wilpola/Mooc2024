@@ -12,16 +12,13 @@ import { CirclePlus, GitCompareArrows } from "lucide-react";
 import { useDispatch, useSelector } from "react-redux";
 import { Textarea } from "./components/ui/textarea";
 import { motion, Reorder } from "motion/react";
+import Filter from "@/components/Filter";
 
 function App() {
   const dispatch = useDispatch();
-  const anecdotes = useSelector(
-    (state: { anecdotes: { content: string; id: string; votes: number }[] }) =>
-      state.anecdotes
-  );
 
   return (
-    <div className="w-[95%] h-screen max-w-screen-md mx-auto py-10 transition-all duration-300 ease-in-out">
+    <div className="w-[95%] min-h-screen max-w-screen-md mx-auto py-10 transition-all duration-300 ease-in-out overflow-x-clip">
       <div className="flex items-center justify-between">
         <h1 className="text-2xl font-semibold">Anecdotes</h1>
 
@@ -48,6 +45,7 @@ function App() {
       </div>
 
       {/* Map Anecdotes */}
+      <Filter />
       <AnecdoteList />
 
       <AnecdoteForm variant="outline" />
@@ -113,21 +111,32 @@ export function AnecdoteForm({ variant }: AnecdoteFormProps) {
 
 export function AnecdoteList() {
   const dispatch = useDispatch();
-  const anecdotes = useSelector(
-    (state: { anecdotes: { content: string; id: string; votes: number }[] }) =>
-      state.anecdotes
+  const { anecdotes, filter } = useSelector(
+    (state: {
+      anecdotes: { content: string; id: string; votes: number }[];
+      filter: string;
+    }) => ({
+      anecdotes: state.anecdotes,
+      filter: state.filter,
+    })
   );
+
+  const filteredAnecdotes = filter
+    ? anecdotes.filter((a) =>
+        a.content.toLowerCase().includes(filter.toLowerCase())
+      )
+    : anecdotes;
 
   return (
     <>
       {/* Map Anecdotes */}
+      <h2 className="text-lg font-semibold mt-6">Anecdotes</h2>
       <motion.div
         layout
         transition={{ type: "spring", stiffness: 300, duration: 0.5 }}
-        className="mt-6"
       >
-        <Reorder.Group axis="y" values={anecdotes} onReorder={() => {}}>
-          {[...anecdotes]
+        <Reorder.Group axis="y" values={filteredAnecdotes} onReorder={() => {}}>
+          {[...filteredAnecdotes]
             .sort((a, b) => b.votes - a.votes)
             .map((anecdote) => (
               <Reorder.Item key={anecdote.id} value={anecdote}>
