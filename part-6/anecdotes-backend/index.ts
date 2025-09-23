@@ -1,5 +1,6 @@
 // Main application file for simple anecdotes app
 import express, { Request, Response } from "express";
+import { Server } from "socket.io";
 import cors from "cors";
 
 const app = express();
@@ -11,10 +12,12 @@ fetch(
   "https://raw.githubusercontent.com/fullstack-hy2020/misc/refs/heads/master/anecdotes.json"
 )
   .then((res) => res.json())
-  .then((data) => (
-    anecdotes.push(...data.anecdotes),
-    console.log("Anecdotes loaded:", data.anecdotes)
-));
+  .then(
+    (data) => (
+      anecdotes.push(...data.anecdotes),
+      console.log("Anecdotes loaded:", data.anecdotes)
+    )
+  );
 
 app.get("/", (req: Request, res: Response) => {
   res.send(anecdotes);
@@ -52,8 +55,39 @@ setInterval(() => {
     }
     return true;
   });
-}, 60000); 
+}, 60000);
 
-app.listen(3001, () => {
+// app.listen(3001, () => {
+//   console.log("Server running on port 3001");
+// });
+
+const server = app.listen(3001, () => {
   console.log("Server running on port 3001");
 });
+
+const io = new Server(server, { cors: { origin: "*" } });
+
+io.on("connection", (socket) => {
+  console.log("a user connected");
+
+  socket.on("disconnect", () => {
+    console.log("user disconnected");
+  });
+
+  socket.on("newAnecdote", (newAnecdote) => {
+    anecdotes.push(newAnecdote);
+    io.emit("anecdoteAdded", newAnecdote);
+    console.log("New anecdote added via Socket.IO:", newAnecdote);
+  });
+
+  socket.on("voteAnecdote", (id) => {
+    const anecdote = anecdotes.find((a) => a.id === id);
+    if (anecdote) {
+      anecdote.votes++;
+      io.emit("anecdoteVoted", anecdote);
+      console.log(`Anecdote with id ${id} voted via Socket.IO. Total votes: ${anecdote.votes}`);
+    }
+  });
+});
+
+export default io;
