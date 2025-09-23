@@ -44,8 +44,9 @@ const anecdoteSlice = createSlice({
     },
     createAnecdote: (state, action) => {
       const content = action.payload;
-      axios.post("http://localhost:3001/", asObject(content));
-      state.push(asObject(content));
+      const x = asObject(content);
+      axios.post("http://localhost:3001/", x);
+      state.push(x);
     },
     resetInitialState: () => {
       return initialState;
