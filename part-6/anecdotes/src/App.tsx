@@ -16,9 +16,14 @@ import Filter from "@/components/Filter";
 import type { AnecdoteProps } from "./reducers/anecdote-reducers";
 import type { NotificationProps } from "./reducers/notification-reducer";
 import { useEffect } from "react";
-
+import { initializeAnecdotes } from "./reducers/anecdote-reducers";
 function App() {
-  const dispatch = useDispatch();
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const dispatch = useDispatch<any>();
+
+  useEffect(() => {
+    dispatch(initializeAnecdotes());
+  }, []);
 
   return (
     <div className="w-[95%] min-h-screen max-w-screen-md mx-auto transition-all duration-300 ease-in-out py-10">

@@ -1,4 +1,9 @@
-import { createSlice } from "@reduxjs/toolkit";
+import {
+  createSlice,
+  type Dispatch,
+  type PayloadAction,
+} from "@reduxjs/toolkit";
+import axios from "axios";
 
 // Anecdote reducers file
 export const anecdotesAtStart = [
@@ -44,10 +49,42 @@ const anecdoteSlice = createSlice({
       state.push(asObject(content));
     },
     resetInitialState: () => {
-        return initialState;
-    }
+      return initialState;
+    },
+    initializeAnecdotes(state, action: PayloadAction<unknown[]>) {
+      // This reducer is intentionally left blank as anecdotes are handled in a different slice
+      state.push(...(action.payload as AnecdoteProps[]));
+    },
   },
 });
 
-export const { vote, createAnecdote, resetInitialState } = anecdoteSlice.actions;
+export const { vote, createAnecdote, resetInitialState } =
+  anecdoteSlice.actions;
+
+export function initializeAnecdotes() {
+  return async (dispatch: Dispatch) => {
+    try {
+      const localResponse = await axios.get("http://localhost:3001/");
+      dispatch({
+        type: "anecdotes/initializeAnecdotes",
+        payload: localResponse.data,
+      });
+    } catch (error) {
+      try {
+        const response = await axios.get(
+          "https://raw.githubusercontent.com/fullstack-hy2020/misc/refs/heads/master/anecdotes.json"
+        );
+        // console.log(response.data.anecdotes);
+        dispatch({
+          type: "anecdotes/initializeAnecdotes",
+          payload: response.data.anecdotes,
+        });
+        return;
+      } catch (error) {
+        console.error("Failed to fetch anecdotes:", error);
+      }
+      console.error("Failed to fetch local anecdotes:", error);
+    }
+  };
+}
 export default anecdoteSlice.reducer;
