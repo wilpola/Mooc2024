@@ -6,19 +6,13 @@ import {
 import axios from "axios";
 
 // Anecdote reducers file
-export const anecdotesAtStart = [
-  "If it hurts, do it more often",
-  "Adding manpower to a late software project makes it later!",
-  "The first 90 percent of the code accounts for the first 90 percent of the development time...The remaining 10 percent of the code accounts for the other 90 percent of the development time.",
-  "Any fool can write code that a computer can understand. Good programmers write code that humans can understand.",
-  "Premature optimization is the root of all evil.",
-  "Debugging is twice as hard as writing the code in the first place. Therefore, if you write the code as cleverly as possible, you are, by definition, not smart enough to debug it.",
-];
+export const anecdotesAtStart = [];
 
 export interface AnecdoteProps {
   content: string;
   id: string;
   votes: number;
+  timeStamp: string;
 }
 
 const getId = () => (100000 * Math.random()).toFixed(0);
@@ -28,6 +22,7 @@ export const asObject = (anecdote: string) => {
     content: anecdote,
     id: getId(),
     votes: 0,
+    timeStamp: new Date().toISOString(),
   };
 };
 
@@ -39,6 +34,9 @@ const anecdoteSlice = createSlice({
   reducers: {
     vote: (state, action) => {
       const id = action.payload;
+      axios.post(`http://localhost:3001/vote/${id}`).then((response) => response.data).catch((error) => {
+        console.error("Failed to vote for anecdote:", error);
+      });
       const anecdote = state.find((a) => a.id === id);
       if (anecdote) {
         anecdote.votes++;
@@ -46,6 +44,7 @@ const anecdoteSlice = createSlice({
     },
     createAnecdote: (state, action) => {
       const content = action.payload;
+      axios.post("http://localhost:3001/", asObject(content));
       state.push(asObject(content));
     },
     resetInitialState: () => {
@@ -70,6 +69,7 @@ export function initializeAnecdotes() {
         payload: localResponse.data,
       });
     } catch (error) {
+      // Fallback to direct fetch from Github if local server fails / is not found
       try {
         const response = await axios.get(
           "https://raw.githubusercontent.com/fullstack-hy2020/misc/refs/heads/master/anecdotes.json"
@@ -87,4 +87,5 @@ export function initializeAnecdotes() {
     }
   };
 }
+
 export default anecdoteSlice.reducer;

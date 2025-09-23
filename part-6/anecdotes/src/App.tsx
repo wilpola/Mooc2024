@@ -14,16 +14,20 @@ import { Textarea } from "./components/ui/textarea";
 import { motion, Reorder } from "motion/react";
 import Filter from "@/components/Filter";
 import type { AnecdoteProps } from "./reducers/anecdote-reducers";
-import type { NotificationProps } from "./reducers/notification-reducer";
+import {
+  setNotification,
+  type NotificationProps,
+} from "./reducers/notification-reducer";
 import { useEffect } from "react";
 import { initializeAnecdotes } from "./reducers/anecdote-reducers";
+
 function App() {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const dispatch = useDispatch<any>();
 
   useEffect(() => {
     dispatch(initializeAnecdotes());
-  }, []);
+  }, [dispatch]);
 
   return (
     <div className="w-[95%] min-h-screen max-w-screen-md mx-auto transition-all duration-300 ease-in-out py-10">
@@ -152,23 +156,28 @@ export function AnecdoteList() {
             .map((anecdote) => (
               <Reorder.Item key={anecdote.id} value={anecdote}>
                 <div className="my-4 p-4 border rounded-md grid grid-cols-[1fr_80px] gap-4">
-                  <div>{anecdote.content}</div>
+                  <div className="flex flex-col">
+                    <h4 className="text-xs text-muted-foreground">
+                      {anecdote.id}
+                    </h4>
+                    <div>{anecdote.content}</div>
+                  </div>
                   <div className="flex flex-col items-center">
                     <span className="font-semibold">{anecdote.votes}</span>{" "}
                     <Button
                       variant={"outline"}
                       size={"sm"}
                       className="hover:cursor-pointer"
-                      onClick={() =>
+                      onClick={() => {
                         dispatch({
                           type: "anecdotes/vote",
                           payload: anecdote.id,
-                        }) &&
+                        });
                         dispatch({
                           type: "notification/setNotification",
                           payload: anecdote.content,
-                        })
-                      }
+                        });
+                      }}
                     >
                       vote
                     </Button>
@@ -190,10 +199,7 @@ function NotificationDisplay() {
 
   useEffect(() => {
     if (notification.message) {
-      const timer = setTimeout(() => {
-        dispatch({ type: "notification/clearNotification" });
-      }, 5000);
-      return () => clearTimeout(timer); // Cleanup
+      dispatch(setNotification(notification.message, 5));
     }
   }, [notification.message, dispatch]);
 
