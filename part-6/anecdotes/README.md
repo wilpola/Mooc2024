@@ -1,69 +1,15 @@
-# React + TypeScript + Vite
+# Anecdotes
+This is a project that covers the section 6 exercises. 
+![image](src/assets/anecdotes.png)
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+## About the project
+We build a very basic web application that comprises of 2 parts: Frontend and Backend. Throughout the different exercises we have build out a anecdotes app, that displays anecdotes stored in a Redux store. By the end of the section, we have also built a new backend that the client side fetches the data from, and to which the users can also write to. For security and other reasons, we have enabled a feature that erases the anecdotes stored every 15 minutes. Meaning that if a user writes something, we stamp it on the server side, and it gets invalidated after this set period of time.
 
-Currently, two official plugins are available:
+## Frontend
+The frontend is build with the Basic Vite + React + Tailwind + Redux stack. However, I have opted to use Radix based components `Shadcn/ui` to beautify that application. Framer-motion is used to allow clean animations, and presense. Frontend is run on port `5173`
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## Backend
+The backend is built with Express.js & Typescript. We have a simple `dist/` directory that is used in the published version, but users can still use the `npm run dev` command to get the local version up and running. The backend is run on port `3001`
 
-## Expanding the ESLint configuration
-
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
-
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
-
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
-
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
-
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
-
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+### Set up
+You can simply clone the reposotiry, and `npm install` both the `part-6/anecdotes` and `part-6/anecdotes-backend` to get the backend and frontend to talk to each other. The frontend is setup in a way, that if the backend cannot be reached, we opt to only use the data on [https://raw.githubusercontent.com/fullstack-hy2020/misc/refs/heads/master/anecdotes.json](https://raw.githubusercontent.com/fullstack-hy2020/misc/refs/heads/master/anecdotes.json). This is a initial data file gotten from the creators of the fullstackopen -course.
