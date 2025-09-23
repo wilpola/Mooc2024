@@ -14,6 +14,8 @@ import { Textarea } from "./components/ui/textarea";
 import { motion, Reorder } from "motion/react";
 import Filter from "@/components/Filter";
 import type { AnecdoteProps } from "./reducers/anecdote-reducers";
+import type { NotificationProps } from "./reducers/notification-reducer";
+import { useEffect } from "react";
 
 function App() {
   const dispatch = useDispatch();
@@ -47,6 +49,7 @@ function App() {
 
       {/* Map Anecdotes */}
       <Filter />
+      <NotificationDisplay />
       <AnecdoteList />
 
       <AnecdoteForm variant="outline" />
@@ -113,15 +116,16 @@ export function AnecdoteForm({ variant }: AnecdoteFormProps) {
 export function AnecdoteList() {
   const dispatch = useDispatch();
 
-  const anecdotes = useSelector((state: {
-    anecdotes: { content: string; id: string; votes: number }[];
-    filter: string;
-  }) => state.anecdotes);
+  const anecdotes = useSelector(
+    (state: {
+      anecdotes: { content: string; id: string; votes: number }[];
+      filter: string;
+    }) => state.anecdotes
+  );
 
-  const filter = useSelector((state: {
-    anecdotes: AnecdoteProps[];
-    filter: string;
-  }) => state.filter);
+  const filter = useSelector(
+    (state: { anecdotes: AnecdoteProps[]; filter: string }) => state.filter
+  );
 
   const filteredAnecdotes = filter
     ? anecdotes.filter((a) =>
@@ -154,6 +158,10 @@ export function AnecdoteList() {
                         dispatch({
                           type: "anecdotes/vote",
                           payload: anecdote.id,
+                        }) &&
+                        dispatch({
+                          type: "notification/setNotification",
+                          payload: anecdote.content,
                         })
                       }
                     >
@@ -166,6 +174,40 @@ export function AnecdoteList() {
         </Reorder.Group>
       </motion.div>
     </>
+  );
+}
+
+function NotificationDisplay() {
+  const notification = useSelector(
+    (state: { notification: NotificationProps }) => state.notification
+  );
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    if (notification.message) {
+      const timer = setTimeout(() => {
+        dispatch({ type: "notification/clearNotification" });
+      }, 5000);
+      return () => clearTimeout(timer); // Cleanup
+    }
+  }, [notification.message, dispatch]);
+
+  return (
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      className="mt-3"
+    >
+      {notification.message && (
+        <div
+          className="p-4 mb-4 text-sm text-blue-800 rounded-lg bg-blue-50 dark:bg-gray-800 dark:text-blue-400 shadow-sm shadow-blue-100"
+          role="alert"
+        >
+          <span className="font-medium">You Voted:</span> {notification.message}
+        </div>
+      )}
+    </motion.div>
   );
 }
 
