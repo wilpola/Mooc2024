@@ -26,6 +26,14 @@ const App = () => {
       return response.data;
     },
     retry: 1,
+    refetchOnWindowFocus: false,
+    onSuccess: () => {
+      setLoading(false);
+    },
+    onError: (error) => {
+      setStatus(error.message);
+      setLoading(false);
+    },
   });
 
   if (a.isLoading) {

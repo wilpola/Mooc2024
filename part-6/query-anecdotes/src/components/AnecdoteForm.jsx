@@ -1,4 +1,10 @@
+import { useDispatch } from "react-redux";
+import { createAnecdote } from "../reducers/anecdote-reducers";
+import axios from "axios";
+
 const AnecdoteForm = () => {
+  const dispatch = useDispatch();
+
   const onCreate = (event) => {
     event.preventDefault();
     const content = event.target.anecdote.value;
@@ -8,6 +14,9 @@ const AnecdoteForm = () => {
       return;
     } else {
       console.log("new anecdote", content);
+
+      // Create new anecdote
+      dispatch(createAnecdote({ content, votes: 0, id: crypto.randomUUID() }));
       event.target.anecdote.value = "";
     }
   };
