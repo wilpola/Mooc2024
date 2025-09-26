@@ -3,11 +3,15 @@ import Notification from "./components/Notification";
 import axios from "axios";
 import { useQuery } from "@tanstack/react-query";
 import { useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import "./styles.css";
+import { setAnecdotes } from "./reducers/anecdote-reducers";
 
 const App = () => {
   const [loading, setLoading] = useState(true);
-  const [anecdotes, setAnecdotes] = useState([]);
+  const [status, setStatus] = useState(null);
+  const anecdotes = useSelector((state) => state.anecdotes);
+  const dispatch = useDispatch();
 
   const handleVote = (anecdote) => {
     console.log("vote");
@@ -17,11 +21,25 @@ const App = () => {
     queryKey: ["anecdotes"],
     queryFn: async () => {
       const response = await axios.get("http://localhost:3001/anecdotes");
-      setAnecdotes(response.data);
+      dispatch(setAnecdotes(response.data));
+      console.log("response", response.status);
       return response.data;
     },
     retry: 1,
   });
+
+  if (a.isLoading) {
+    return (
+      <div className="loading">
+        <p>loading data...</p>
+      </div>
+    );
+  }
+
+  // Show error if server refuses connection
+  if (a.isError) {
+    return <ServerConnectionError />;
+  }
 
   return (
     <div id="container">
@@ -41,6 +59,12 @@ const App = () => {
         ))}
       </div>
     </div>
+  );
+};
+
+const ServerConnectionError = () => {
+  return (
+    <div className="">Anecdote service not available due to a server error</div>
   );
 };
 
