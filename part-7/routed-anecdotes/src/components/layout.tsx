@@ -23,10 +23,27 @@ export default function Layout() {
       <div className="h-[calc(100vh-72px-54px)]">
         <Outlet />
       </div>
-      <footer className="border-t mt-4 py-2 text-center">
-        <p className="text-sm">
-          &copy; {new Date().getFullYear()} Anecdotes. All rights reserved.
-        </p>
+      <footer className="border-t mt-4 py-2 text-center text-sm ">
+        <div>
+          Anecdote app for{" "}
+          <Link
+            to="https://fullstackopen.com/"
+            target="_blank"
+            rel="nonreferrer"
+            className={"text-blue-600 underline"}
+          >
+            Full Stack Open
+          </Link>
+          . See the source code{" "}
+          <Link
+            to="https://github.com/fullstack-hy2020/routed-anecdotes/blob/master/src/App.js"
+            target="_blank"
+            rel="noreferrer"
+            className={"text-blue-600 underline"}
+          >
+            here
+          </Link>{" "}
+        </div>
       </footer>
     </div>
   );
