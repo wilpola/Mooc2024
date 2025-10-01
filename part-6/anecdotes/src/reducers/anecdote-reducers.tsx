@@ -1,0 +1,92 @@
+import {
+  createSlice,
+  type Dispatch,
+  type PayloadAction,
+} from "@reduxjs/toolkit";
+import axios from "axios";
+
+// Anecdote reducers file
+export const anecdotesAtStart = [];
+
+export interface AnecdoteProps {
+  content: string;
+  id: string;
+  votes: number;
+  timeStamp: string;
+}
+
+const getId = () => (100000 * Math.random()).toFixed(0);
+
+export const asObject = (anecdote: string) => {
+  return {
+    content: anecdote,
+    id: getId(),
+    votes: 0,
+    timeStamp: new Date().toISOString(),
+  };
+};
+
+const initialState = anecdotesAtStart.map(asObject);
+
+const anecdoteSlice = createSlice({
+  name: "anecdotes",
+  initialState,
+  reducers: {
+    vote: (state, action) => {
+      const id = action.payload;
+      axios.post(`http://localhost:3001/vote/${id}`).then((response) => response.data).catch((error) => {
+        console.error("Failed to vote for anecdote:", error);
+      });
+      const anecdote = state.find((a) => a.id === id);
+      if (anecdote) {
+        anecdote.votes++;
+      }
+    },
+    createAnecdote: (state, action) => {
+      const content = action.payload;
+      const x = asObject(content);
+      axios.post("http://localhost:3001/", x);
+      state.push(x);
+    },
+    resetInitialState: () => {
+      return initialState;
+    },
+    initializeAnecdotes(state, action: PayloadAction<unknown[]>) {
+      // This reducer is intentionally left blank as anecdotes are handled in a different slice
+      state.push(...(action.payload as AnecdoteProps[]));
+    },
+  },
+});
+
+export const { vote, createAnecdote, resetInitialState } =
+  anecdoteSlice.actions;
+
+export function initializeAnecdotes() {
+  return async (dispatch: Dispatch) => {
+    try {
+      const localResponse = await axios.get("http://localhost:3001/");
+      dispatch({
+        type: "anecdotes/initializeAnecdotes",
+        payload: localResponse.data,
+      });
+    } catch (error) {
+      // Fallback to direct fetch from Github if local server fails / is not found
+      try {
+        const response = await axios.get(
+          "https://raw.githubusercontent.com/fullstack-hy2020/misc/refs/heads/master/anecdotes.json"
+        );
+        // console.log(response.data.anecdotes);
+        dispatch({
+          type: "anecdotes/initializeAnecdotes",
+          payload: response.data.anecdotes,
+        });
+        return;
+      } catch (error) {
+        console.error("Failed to fetch anecdotes:", error);
+      }
+      console.error("Failed to fetch local anecdotes:", error);
+    }
+  };
+}
+
+export default anecdoteSlice.reducer;
